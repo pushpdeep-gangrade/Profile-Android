@@ -1,4 +1,4 @@
-package com.example.profileapp;
+package com.example.profileapp.profile;
 
 import android.os.Bundle;
 
@@ -8,7 +8,9 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
-public class ViewProfileFragment extends Fragment {
+import com.example.profileapp.R;
+
+public class EditProfileFragment extends Fragment {
 
     // TODO: Rename parameter arguments, choose names that match
     // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
@@ -17,13 +19,13 @@ public class ViewProfileFragment extends Fragment {
     // TODO: Rename and change types of parameters
     private String mAuthorizationkey;
 
-    public ViewProfileFragment() {
+    public EditProfileFragment() {
         // Required empty public constructor
     }
 
     // TODO: Rename and change types and number of parameters
-    public static ViewProfileFragment newInstance(String authorizationkey) {
-        ViewProfileFragment fragment = new ViewProfileFragment();
+    public static EditProfileFragment newInstance(String authorizationkey) {
+        EditProfileFragment fragment = new EditProfileFragment();
         Bundle args = new Bundle();
         args.putString(AUTH_KEY, authorizationkey);
         fragment.setArguments(args);
@@ -42,6 +44,6 @@ public class ViewProfileFragment extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
-        return inflater.inflate(R.layout.fragment_view_profile, container, false);
+        return inflater.inflate(R.layout.fragment_edit_profile, container, false);
     }
 }

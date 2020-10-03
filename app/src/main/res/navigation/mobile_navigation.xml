@@ -3,10 +3,10 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/mobile_navigation"
-    app:startDestination="@id/nav_login">
+    app:startDestination="@id/nav_view_profile">
     <fragment
         android:id="@+id/nav_login"
-        android:name="com.example.profileapp.LoginFragment"
+        android:name="com.example.profileapp.login.LoginFragment"
         android:label="fragment_login"
         tools:layout="@layout/fragment_login" >
         <action
@@ -18,7 +18,7 @@
     </fragment>
     <fragment
         android:id="@+id/nav_signup"
-        android:name="com.example.profileapp.SignupFragment"
+        android:name="com.example.profileapp.signup.SignupFragment"
         android:label="fragment_signup"
         tools:layout="@layout/fragment_signup" >
         <action
@@ -27,16 +27,17 @@
     </fragment>
     <fragment
         android:id="@+id/nav_view_profile"
-        android:name="com.example.profileapp.ViewProfileFragment"
+        android:name="com.example.profileapp.profile.ViewProfileFragment"
         android:label="fragment_view_profile"
         tools:layout="@layout/fragment_view_profile" >
         <action
             android:id="@+id/action_nav_view_profile_to_nav_edit_profile"
             app:destination="@id/nav_edit_profile" />
+
     </fragment>
     <fragment
         android:id="@+id/nav_edit_profile"
-        android:name="com.example.profileapp.EditProfileFragment"
+        android:name="com.example.profileapp.profile.EditProfileFragment"
         android:label="fragment_edit_profile"
         tools:layout="@layout/fragment_edit_profile" >
         <action

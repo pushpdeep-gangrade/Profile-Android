@@ -1,4 +1,4 @@
-package com.example.profileapp;
+package com.example.profileapp.login;
 
 import android.os.Bundle;
 
@@ -9,6 +9,8 @@ import androidx.navigation.fragment.NavHostFragment;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+
+import com.example.profileapp.R;
 
 public class LoginFragment extends Fragment {
 

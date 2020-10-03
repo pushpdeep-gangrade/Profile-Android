@@ -7,4 +7,14 @@
     <string name="profile">Profile</string>
     <string name="edit_profile">Edit Profile</string>
     <string name="save">Save</string>
+    <string name="first_name_hint">First Name</string>
+    <string name="last_name_hint">Last Name</string>
+    <string name="email_hint">Email</string>
+    <string name="age_hint">Age</string>
+    <string name="password_hint">Password</string>
+    <string name="reEnter_password_hint">Re-enter Password</string>
+    <string name="address_hint">Address</string>
+    <string name="signup_button_text">Sign Up</string>
+    <string name="cancel_button_text">Cancel</string>
+    <string name="create_account_text">Create Account</string>
 </resources>

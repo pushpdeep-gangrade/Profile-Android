@@ -3,6 +3,7 @@ package com.example.profileapp.login;
 import androidx.appcompat.app.AppCompatActivity;
 
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
@@ -20,7 +21,14 @@ import com.android.volley.toolbox.StringRequest;
 import com.android.volley.toolbox.Volley;
 import com.example.profileapp.MainActivity;
 import com.example.profileapp.R;
+import com.example.profileapp.models.User;
 import com.example.profileapp.signup.SignUpActivity;
+import com.google.gson.Gson;
+import com.google.gson.JsonArray;
+
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -60,6 +68,37 @@ public class LoginActivity extends AppCompatActivity {
                                     Toast.makeText(LoginActivity.this, response, Toast.LENGTH_LONG).show();
                                 }
                                 else{
+                                    Gson gsonObject = new Gson();
+
+                                    try {
+                                        JSONArray arr = new JSONArray(response);
+                                        JSONObject userObject = new JSONObject(String.valueOf(arr.get(0)));
+                                        User user = new User();
+
+                                        user.firstName = userObject.getString("fname");
+                                        user.lastName = userObject.getString("lname");
+                                        user.email = userObject.getString("emailId");
+                                        user.address = userObject.getString("address");
+                                        user.age = userObject.getInt("age");
+
+                                        SharedPreferences prefs = getSharedPreferences("info", MODE_PRIVATE);
+                                        prefs.edit().putString("user", gsonObject.toJson(user)).commit();
+
+                                        Log.d("User", arr.get(0).toString());
+                                    } catch (JSONException e) {
+                                        e.printStackTrace();
+                                    }
+                                    //char[] userArrayConvert = response.toCharArray();
+
+                                    //User user = userArrayConvert[0];
+                                    //user.firstName = "";
+
+
+
+
+                                    //SharedPreferences prefs = getSharedPreferences("info", MODE_PRIVATE);
+                                    //prefs.edit().putString("user", gsonObject.toJson(user)).commit();
+
                                     Toast.makeText(LoginActivity.this, "Login Successful", Toast.LENGTH_LONG).show();
                                     Intent gotoMainActivity = new Intent(LoginActivity.this, MainActivity.class);
                                     startActivity(gotoMainActivity);

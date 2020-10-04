@@ -84,7 +84,7 @@ public class SignUpActivity extends AppCompatActivity {
                     protected Map<String, String> getParams()
                     {
                         String firstNameText = firstName.getText().toString();
-                        String lastNameText = firstName.getText().toString();
+                        String lastNameText = lastName.getText().toString();
                         String emailText = email.getText().toString();
                         String addressText = address.getText().toString();
                         String ageText = age.getText().toString();

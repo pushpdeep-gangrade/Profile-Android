@@ -22,6 +22,7 @@ import com.android.volley.toolbox.Volley;
 import com.example.profileapp.MainActivity;
 import com.example.profileapp.R;
 import com.example.profileapp.models.User;
+import com.example.profileapp.profile.ViewProfileFragment;
 import com.example.profileapp.signup.SignUpActivity;
 import com.google.gson.Gson;
 import com.google.gson.JsonArray;
@@ -34,6 +35,10 @@ import java.util.HashMap;
 import java.util.Map;
 
 public class LoginActivity extends AppCompatActivity {
+
+    private static final String AUTH_KEY = "authorizationkey";
+    private String authkey;
+
     Button login;
     EditText email, password;
     TextView createAccount;
@@ -101,6 +106,10 @@ public class LoginActivity extends AppCompatActivity {
 
                                     Toast.makeText(LoginActivity.this, "Login Successful", Toast.LENGTH_LONG).show();
                                     Intent gotoMainActivity = new Intent(LoginActivity.this, MainActivity.class);
+                                    Bundle authBundle = new Bundle();
+                                    Log.d("AuthKey", authkey);
+                                    authBundle.putString(AUTH_KEY, authkey); //Your id
+                                    gotoMainActivity.putExtras(authBundle); //Put your id to your next Intent
                                     startActivity(gotoMainActivity);
                                 }
 
@@ -135,6 +144,22 @@ public class LoginActivity extends AppCompatActivity {
                         params.put("password", passwordText);
 
                         return params;
+                    }
+
+                    @Override
+                    protected Response<String> parseNetworkResponse(NetworkResponse response) {
+                        Log.d("TEST", "Headers size:" + response.headers.size());
+                        authkey = response.headers.get("AuthorizationKey");
+                        return super.parseNetworkResponse(response);
+                    }
+
+                    @Override
+                    protected VolleyError parseNetworkError(VolleyError volleyError) {
+                        if (volleyError.networkResponse != null && volleyError.networkResponse.headers != null) {
+                            Log.d("TEST", "Headers size:" + volleyError.networkResponse.headers.size());
+                            authkey = null;
+                        }
+                        return super.parseNetworkError(volleyError);
                     }
                 };
 

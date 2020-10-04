@@ -13,16 +13,27 @@ import com.google.android.material.appbar.MaterialToolbar;
 
 public class MainActivity extends AppCompatActivity {
 
+    private static final String AUTH_KEY = "authorizationkey";
+    private String mAuthorizationkey;
+    public static String url = "http://104.248.113.55:8080/";
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+
+        if (getIntent().getStringExtra(AUTH_KEY) != null) {
+            mAuthorizationkey = getIntent().getStringExtra(AUTH_KEY);
+        }
 
         MaterialToolbar toolbar = findViewById(R.id.topAppBar);
         setSupportActionBar(toolbar);
 
         NavHostFragment navHostFragment = (NavHostFragment) getSupportFragmentManager().findFragmentById(R.id.nav_host_fragment);
         NavController navController = navHostFragment.getNavController();
+        Bundle authBundle = new Bundle();
+        authBundle.putString(AUTH_KEY, mAuthorizationkey);
+        navController.setGraph(navController.getGraph(), authBundle);
     }
 
     @Override

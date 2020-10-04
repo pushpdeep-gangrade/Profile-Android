@@ -1,9 +1,20 @@
-# Profile-Android
+# Authors
+- Pushdeep Gangrade
+- Katy Mitchell
+- Valerie Ray
+- Rockford Stoller
+
+# Table of Contents
+- [App Mockup](#mockup)
+- [Video Demo](#demo)
+- tbd
+
+# Chatroom App Mockup <a name="mockup"></a>
+
+# Chatroom Demo <a name="demo"></a>
 
 # Project requirements (cross out when fulfilled)
-
-## Goal: reating a simple authentication API for mobile application, the requirements are as follows :
-
+### Goal: Create a simple authentication API for mobile application
 1. Not allowed to use frameworks such as Firebase, or Parse.com. 
 2. Use NodeJS and Express framework to create this app.
 3. Use an online provisioning provider, such as Heroku, Amazon AWS, or Microsoft Azure, or others.
@@ -18,7 +29,7 @@
    - Sign Up (Registration), Login, Profile Screen.
    - The profile screen should allow the user to view and edit their profile information.
 8. Submission should include:
-   - ~~Create a Github or Bitbucket repo for the assignment.~~
+   - ~~Create a Github or Bitbucket repo for the assignment~~
    - Push your code to the created repo. Should contain both the mobile and web code. 
    - On the same repo create a wiki page describing your api design and implementation. The wiki page should describe the API routes, DB Schema and all the assumptions required to provide authentication. In addition describe any data that is stored on the device or on the server.
    - Include the Postman file in the repo.

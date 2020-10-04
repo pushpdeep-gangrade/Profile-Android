@@ -1,19 +1,20 @@
-# Authors
+# Table of Contents
+- [Authors](#authors)
+- [App Mockup](#mockup)
+- [Video Demo](#demo)
+- tbd
+
+## Authors <a name="authors"></a>
 - Pushdeep Gangrade
 - Katy Mitchell
 - Valerie Ray
 - Rockford Stoller
 
-# Table of Contents
-- [App Mockup](#mockup)
-- [Video Demo](#demo)
-- tbd
+## App Mockup <a name="mockup"></a>
 
-# Chatroom App Mockup <a name="mockup"></a>
+## Video Demo <a name="demo"></a>
 
-# Chatroom Demo <a name="demo"></a>
-
-# Project requirements (cross out when fulfilled)
+## Project requirements (cross out when fulfilled)
 ### Goal: Create a simple authentication API for mobile application
 1. Not allowed to use frameworks such as Firebase, or Parse.com. 
 2. Use NodeJS and Express framework to create this app.

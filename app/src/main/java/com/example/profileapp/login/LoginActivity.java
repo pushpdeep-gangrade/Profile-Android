@@ -93,16 +93,6 @@ public class LoginActivity extends AppCompatActivity {
                                     } catch (JSONException e) {
                                         e.printStackTrace();
                                     }
-                                    //char[] userArrayConvert = response.toCharArray();
-
-                                    //User user = userArrayConvert[0];
-                                    //user.firstName = "";
-
-
-
-
-                                    //SharedPreferences prefs = getSharedPreferences("info", MODE_PRIVATE);
-                                    //prefs.edit().putString("user", gsonObject.toJson(user)).commit();
 
                                     Toast.makeText(LoginActivity.this, "Login Successful", Toast.LENGTH_LONG).show();
                                     Intent gotoMainActivity = new Intent(LoginActivity.this, MainActivity.class);

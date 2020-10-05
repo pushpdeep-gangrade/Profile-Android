@@ -85,7 +85,9 @@ public class ViewProfileFragment extends Fragment {
         view.findViewById(R.id.viewProfile_editProfileButton).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                navController.navigate(R.id.action_nav_view_profile_to_nav_edit_profile);
+                Bundle bundle = new Bundle();
+                bundle.putString(AUTH_KEY, mAuthorizationkey);
+                navController.navigate(R.id.action_nav_view_profile_to_nav_edit_profile, bundle);
             }
         });
 

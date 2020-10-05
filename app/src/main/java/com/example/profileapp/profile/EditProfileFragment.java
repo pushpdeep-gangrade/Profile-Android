@@ -7,18 +7,34 @@ import androidx.fragment.app.Fragment;
 import androidx.navigation.NavController;
 import androidx.navigation.fragment.NavHostFragment;
 
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.TextView;
+import android.widget.Toast;
 
+import com.android.volley.AuthFailureError;
+import com.android.volley.NetworkResponse;
+import com.android.volley.Request;
+import com.android.volley.RequestQueue;
+import com.android.volley.Response;
+import com.android.volley.VolleyError;
+import com.android.volley.toolbox.StringRequest;
+import com.android.volley.toolbox.Volley;
 import com.example.profileapp.R;
+import com.example.profileapp.login.LoginActivity;
 import com.example.profileapp.models.User;
+import com.example.profileapp.signup.SignUpActivity;
 import com.google.gson.Gson;
 
+import java.util.HashMap;
+import java.util.Map;
+
 import static android.content.Context.MODE_PRIVATE;
+import static com.example.profileapp.MainActivity.url;
 
 public class EditProfileFragment extends Fragment {
     View view;
@@ -59,21 +75,24 @@ public class EditProfileFragment extends Fragment {
         // Inflate the layout for this fragment
         view = inflater.inflate(R.layout.fragment_edit_profile, container, false);
 
+        Log.d("mAuthorizationkey", mAuthorizationkey);
+
         SharedPreferences prefs = this.getActivity().getSharedPreferences("info", MODE_PRIVATE);
 
         Gson gson = new Gson();
-        User user = gson.fromJson(prefs.getString("user", null), User.class);
+        final User user = gson.fromJson(prefs.getString("user", null), User.class);
 
-        EditText first = view.findViewById(R.id.editProfile_firstName);
-        EditText last = view.findViewById(R.id.editProfile_lastName);
-        EditText email = view.findViewById(R.id.editProfile_email);
-        EditText address = view.findViewById(R.id.editProfile_address);
-        EditText age = view.findViewById(R.id.editProfile_age);
+        final EditText firstName = view.findViewById(R.id.editProfile_firstName);
+        final EditText lastName = view.findViewById(R.id.editProfile_lastName);
+        final EditText email = view.findViewById(R.id.editProfile_email);
+        final EditText address = view.findViewById(R.id.editProfile_address);
+        final EditText age = view.findViewById(R.id.editProfile_age);
+        final EditText password = view.findViewById(R.id.editProfile_password);
         Button cancel = view.findViewById(R.id.cancel_edit_profile_button);
         Button save = view.findViewById(R.id.save_edit_profile_button);
 
-        first.setText(user.firstName);
-        last.setText(user.lastName);
+        firstName.setText(user.firstName);
+        lastName.setText(user.lastName);
         email.setText(user.email);
         address.setText(user.address);
         age.setText(String.valueOf(user.age));
@@ -84,7 +103,100 @@ public class EditProfileFragment extends Fragment {
         save.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
+                String updateProfileUrl = url + "profile/" + user.email;
 
+                RequestQueue queue = Volley.newRequestQueue(getContext());
+
+                StringRequest postRequest = new StringRequest(Request.Method.POST, updateProfileUrl,
+                        new Response.Listener<String>()
+                        {
+                            @Override
+                            public void onResponse(String response) {
+                                // response
+                                Log.d("Response", response);
+
+                                if(response.equals("Email id not found in Record")){
+                                    Toast.makeText(getContext(), response, Toast.LENGTH_LONG).show();
+                                }
+                                else{
+                                    Toast.makeText(getContext(), response, Toast.LENGTH_LONG).show();
+
+                                    String firstNameText = firstName.getText().toString();
+                                    String lastNameText = lastName.getText().toString();
+                                    String emailText = email.getText().toString();
+                                    String addressText = address.getText().toString();
+                                    String ageText = age.getText().toString();
+
+
+
+                                    User user = new User();
+
+                                    user.firstName = firstNameText;
+                                    user.lastName = lastNameText;
+                                    user.email = emailText;
+                                    user.address = addressText;
+                                    user.age = Integer.parseInt(ageText);
+
+                                    Gson gsonObject = new Gson();
+
+                                    SharedPreferences prefs = getActivity().getSharedPreferences("info", MODE_PRIVATE);
+                                    prefs.edit().putString("user", gsonObject.toJson(user)).commit();
+
+
+                                    Bundle bundle = new Bundle();
+                                    bundle.putString(AUTH_KEY, mAuthorizationkey);
+                                    navController.navigate(R.id.action_nav_edit_profile_to_nav_view_profile, bundle);
+                                }
+
+                            }
+                        },
+                        new Response.ErrorListener()
+                        {
+                            @Override
+                            public void onErrorResponse(VolleyError error) {
+                                // error
+                                NetworkResponse response = error.networkResponse;
+                                String errorMsg = "";
+                                if(response != null && response.data != null){
+                                    String errorString = new String(response.data);
+                                    Log.i("log error", errorString);
+                                }
+                            }
+                        }
+                ) {
+                    @Override
+                    protected Map<String, String> getParams()
+                    {
+                        String firstNameText = firstName.getText().toString();
+                        String lastNameText = lastName.getText().toString();
+                        String emailText = email.getText().toString();
+                        String addressText = address.getText().toString();
+                        String ageText = age.getText().toString();
+                        String passwordText = password.getText().toString();
+
+                        Map<String, String>  params = new HashMap<String, String>();
+
+                        params.put("firstname", firstNameText);
+                        params.put("lastname", lastNameText);
+                        params.put("email", emailText);
+                        params.put("address", addressText);
+                        params.put("age", ageText);
+                        params.put("password", passwordText);
+
+
+                        return params;
+                    }
+
+                    @Override
+                    public Map<String, String> getHeaders() throws AuthFailureError {
+                        Map<String, String>  params = new HashMap<String, String>();
+                        params.put("authorizationkey", mAuthorizationkey);
+
+                        return params;
+                    }
+                };
+
+                queue.add(postRequest);
             }
         });
 

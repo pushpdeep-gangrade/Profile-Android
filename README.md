@@ -21,7 +21,7 @@
 Method POST
 http://104.248.113.55:8080/signup
 
-<strong>Request:</strong>
+|Request|
 Body:
 {
    "email" : "BobSmith@email.com"
@@ -32,7 +32,7 @@ Body:
    "address" : "123 Example Street"
 }
 
-<strong>Response:</strong>
+|Response|
 Body:
 {
    "email" : "BobSmith@email.com"
@@ -48,14 +48,14 @@ Body:
 Method GET
 http://104.248.113.55:8080/login
 
-<strong>Request:</strong>
+|Request|
 Body:
 {
    "email: : "BobSmith@email.com"
    "password" : "ExamplePassword"
 }
 
-<strong>Response:</strong>
+|Response|
 Header:
 {
    "AuthorizationKey" : "ExampleKeyReturnedFromLogin"
@@ -75,13 +75,13 @@ Profile:
 Method GET
 http://104.248.113.55:8080/profile/:email
 
-<strong>Request:</strong>
+|Request|
 Header:
 {
    "authorizationkey" : "ExampleKeyReturnedFromLogin"
 }
 
-<strong>Response:</strong>
+|Response|
 Body:
 {
    "email" : "BobSmith@email.com"
@@ -94,7 +94,8 @@ Body:
 ```
 Method POST
 http://104.248.113.55:8080/profile/:email
-<strong>Request:</strong>
+
+|Request|
 Header:
 {
    "authorizationkey" : "ExampleKeyReturnedFromLogin"
@@ -110,7 +111,7 @@ Body:
    "address" : "123 Example Changed Street"
 }
 
-<strong>Response:</strong>
+|Response|
 Body:
 {
    "email" : "BobSmith2020@email.com"

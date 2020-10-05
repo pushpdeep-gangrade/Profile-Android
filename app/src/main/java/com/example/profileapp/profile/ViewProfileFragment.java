@@ -91,24 +91,24 @@ public class ViewProfileFragment extends Fragment {
             }
         });
 
-        SharedPreferences prefs = this.getActivity().getSharedPreferences("info", MODE_PRIVATE);
+        //SharedPreferences prefs = this.getActivity().getSharedPreferences("info", MODE_PRIVATE);
 
-        Gson gson = new Gson();
-        User user = gson.fromJson(prefs.getString("user", null), User.class);
+        //Gson gson = new Gson();
+        //User user = gson.fromJson(prefs.getString("user", null), User.class);
 
-        TextView first = view.findViewById(R.id.viewProfile_firstNameText);
-        TextView last = view.findViewById(R.id.viewProfile_lastNameText);
-        TextView email = view.findViewById(R.id.viewProfile_emailText);
-        TextView address = view.findViewById(R.id.viewProfile_addressText);
-        TextView age = view.findViewById(R.id.viewProfile_ageText);
+        //TextView first = view.findViewById(R.id.viewProfile_firstNameText);
+        //TextView last = view.findViewById(R.id.viewProfile_lastNameText);
+        //TextView email = view.findViewById(R.id.viewProfile_emailText);
+        //TextView address = view.findViewById(R.id.viewProfile_addressText);
+        //TextView age = view.findViewById(R.id.viewProfile_ageText);
 
-        first.setText(user.firstName);
-        last.setText(user.lastName);
-        email.setText(user.email);
-        address.setText(user.address);
-        age.setText(String.valueOf(user.age));
+        //first.setText(user.firstName);
+        //last.setText(user.lastName);
+        //email.setText(user.email);
+        //address.setText(user.address);
+        //age.setText(String.valueOf(user.age));
 
-        /*
+
         SharedPreferences prefs = this.getActivity().getSharedPreferences("info", MODE_PRIVATE);
 
         Gson gson = new Gson();
@@ -187,7 +187,6 @@ public class ViewProfileFragment extends Fragment {
         };
 
         queue.add(getRequest);
-        */
 
         return view;
     }

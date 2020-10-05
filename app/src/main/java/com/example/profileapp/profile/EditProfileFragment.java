@@ -24,11 +24,16 @@ import com.android.volley.Response;
 import com.android.volley.VolleyError;
 import com.android.volley.toolbox.StringRequest;
 import com.android.volley.toolbox.Volley;
+import com.example.profileapp.MainActivity;
 import com.example.profileapp.R;
 import com.example.profileapp.login.LoginActivity;
 import com.example.profileapp.models.User;
 import com.example.profileapp.signup.SignUpActivity;
 import com.google.gson.Gson;
+
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -40,6 +45,7 @@ public class EditProfileFragment extends Fragment {
     View view;
     private NavHostFragment navHostFragment;
     private NavController navController;
+    private User user = new User();
 
     // TODO: Rename parameter arguments, choose names that match
     // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
@@ -80,25 +86,91 @@ public class EditProfileFragment extends Fragment {
         SharedPreferences prefs = this.getActivity().getSharedPreferences("info", MODE_PRIVATE);
 
         Gson gson = new Gson();
-        final User user = gson.fromJson(prefs.getString("user", null), User.class);
 
-        final EditText firstName = view.findViewById(R.id.editProfile_firstName);
-        final EditText lastName = view.findViewById(R.id.editProfile_lastName);
+        Button cancel = view.findViewById(R.id.cancel_edit_profile_button);
+        Button save = view.findViewById(R.id.save_edit_profile_button);
+
+
+        navHostFragment = (NavHostFragment) getActivity().getSupportFragmentManager().findFragmentById(R.id.nav_host_fragment);
+        navController = navHostFragment.getNavController();
+
+
+        final EditText first = view.findViewById(R.id.editProfile_firstName);
+        final EditText last = view.findViewById(R.id.editProfile_lastName);
         final EditText email = view.findViewById(R.id.editProfile_email);
         final EditText address = view.findViewById(R.id.editProfile_address);
         final EditText age = view.findViewById(R.id.editProfile_age);
         final EditText password = view.findViewById(R.id.editProfile_password);
-        Button cancel = view.findViewById(R.id.cancel_edit_profile_button);
-        Button save = view.findViewById(R.id.save_edit_profile_button);
 
-        firstName.setText(user.firstName);
-        lastName.setText(user.lastName);
-        email.setText(user.email);
-        address.setText(user.address);
-        age.setText(String.valueOf(user.age));
 
-        navHostFragment = (NavHostFragment) getActivity().getSupportFragmentManager().findFragmentById(R.id.nav_host_fragment);
-        navController = navHostFragment.getNavController();
+        User currentUser = gson.fromJson(prefs.getString("user", null), User.class);
+
+        String profileUrl = MainActivity.url + "profile/" + currentUser.email;
+
+        RequestQueue queue = Volley.newRequestQueue(getContext());
+
+        StringRequest getRequest = new StringRequest(Request.Method.GET, profileUrl,
+                new Response.Listener<String>()
+                {
+                    @Override
+                    public void onResponse(String response) {
+                        // response
+                        Log.d("Response", response);
+                        if(response.equals("UNAUTHORIZED")){
+                            Toast.makeText(getContext(), response, Toast.LENGTH_LONG).show();
+                        }
+                        else{
+                            try {
+                                JSONArray arr = new JSONArray(response);
+                                JSONObject userObject = new JSONObject(String.valueOf(arr.get(0)));
+
+                                user.firstName = userObject.getString("fname");
+                                user.lastName = userObject.getString("lname");
+                                user.email = userObject.getString("emailId");
+                                user.address = userObject.getString("address");
+                                user.age = userObject.getInt("age");
+
+                                first.setText(user.firstName);
+                                last.setText(user.lastName);
+                                email.setText(user.email);
+                                address.setText(user.address);
+                                age.setText(String.valueOf(user.age));
+
+                                Log.d("User", arr.get(0).toString());
+                            } catch (JSONException e) {
+                                e.printStackTrace();
+                            }
+
+                            Toast.makeText(getContext(), "Loaded User Profile", Toast.LENGTH_LONG).show();
+                        }
+
+                    }
+                },
+                new Response.ErrorListener()
+                {
+                    @Override
+                    public void onErrorResponse(VolleyError error) {
+                        // error
+                        NetworkResponse response = error.networkResponse;
+                        String errorMsg = "";
+                        if(response != null && response.data != null){
+                            String errorString = new String(response.data);
+                            Log.i("log error", errorString);
+                        }
+                    }
+                }
+        ) {
+            @Override
+            public Map<String, String> getHeaders() throws AuthFailureError {
+                Map<String, String>  params = new HashMap<String, String>();
+                params.put("authorizationkey", mAuthorizationkey);
+
+                return params;
+            }
+        };
+
+        queue.add(getRequest);
+
 
         save.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -121,12 +193,11 @@ public class EditProfileFragment extends Fragment {
                                 else{
                                     Toast.makeText(getContext(), response, Toast.LENGTH_LONG).show();
 
-                                    String firstNameText = firstName.getText().toString();
-                                    String lastNameText = lastName.getText().toString();
+                                    String firstNameText = first.getText().toString();
+                                    String lastNameText = last.getText().toString();
                                     String emailText = email.getText().toString();
                                     String addressText = address.getText().toString();
                                     String ageText = age.getText().toString();
-
 
 
                                     User user = new User();
@@ -167,8 +238,8 @@ public class EditProfileFragment extends Fragment {
                     @Override
                     protected Map<String, String> getParams()
                     {
-                        String firstNameText = firstName.getText().toString();
-                        String lastNameText = lastName.getText().toString();
+                        String firstNameText = first.getText().toString();
+                        String lastNameText = last.getText().toString();
                         String emailText = email.getText().toString();
                         String addressText = address.getText().toString();
                         String ageText = age.getText().toString();
@@ -200,10 +271,13 @@ public class EditProfileFragment extends Fragment {
             }
         });
 
+
         cancel.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                navController.navigate(R.id.action_nav_edit_profile_to_nav_view_profile);
+                Bundle bundle = new Bundle();
+                bundle.putString(AUTH_KEY, mAuthorizationkey);
+                navController.navigate(R.id.action_nav_edit_profile_to_nav_view_profile, bundle);
             }
         });
 

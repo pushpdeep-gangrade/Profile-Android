@@ -90,7 +90,8 @@ Body:
    "age" : "33"
    "address" : "123 Example Street"
 }
-
+```
+```
 Method POST
 http://104.248.113.55:8080/profile/:email
 <strong>Request:</strong>

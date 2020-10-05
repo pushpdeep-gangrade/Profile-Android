@@ -46,6 +46,7 @@ public class EditProfileFragment extends Fragment {
     private NavHostFragment navHostFragment;
     private NavController navController;
     private User user = new User();
+    private Boolean allValid = false;
 
     // TODO: Rename parameter arguments, choose names that match
     // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
@@ -97,7 +98,6 @@ public class EditProfileFragment extends Fragment {
 
         final EditText first = view.findViewById(R.id.editProfile_firstName);
         final EditText last = view.findViewById(R.id.editProfile_lastName);
-        final EditText email = view.findViewById(R.id.editProfile_email);
         final EditText address = view.findViewById(R.id.editProfile_address);
         final EditText age = view.findViewById(R.id.editProfile_age);
         final EditText password = view.findViewById(R.id.editProfile_password);
@@ -132,7 +132,6 @@ public class EditProfileFragment extends Fragment {
 
                                 first.setText(user.firstName);
                                 last.setText(user.lastName);
-                                email.setText(user.email);
                                 address.setText(user.address);
                                 age.setText(String.valueOf(user.age));
 
@@ -175,99 +174,125 @@ public class EditProfileFragment extends Fragment {
         save.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                String updateProfileUrl = url + "profile/" + user.email;
 
-                RequestQueue queue = Volley.newRequestQueue(getContext());
+                allValid = true;
 
-                StringRequest postRequest = new StringRequest(Request.Method.POST, updateProfileUrl,
-                        new Response.Listener<String>()
-                        {
-                            @Override
-                            public void onResponse(String response) {
-                                // response
-                                Log.d("Response", response);
+                if (first.getText() == null || first.getText().toString().equals("")) {
+                    allValid = false;
+                    first.setError("Enter your first name");
+                }
 
-                                if(response.equals("Email id not found in Record")){
-                                    Toast.makeText(getContext(), response, Toast.LENGTH_LONG).show();
+                if (last.getText() == null || last.getText().toString().equals("")) {
+                    allValid = false;
+                    last.setError("Enter your last name");
+                }
+
+                if (address.getText() == null || address.getText().toString().equals("")) {
+                    allValid = false;
+                    address.setError("Enter your address");
+                }
+
+                if (age.getText() == null || age.getText().toString().equals("")) {
+                    allValid = false;
+                    age.setError("Enter your age");
+                }
+
+                if (password.getText() == null || password.getText().toString().equals("") || password.getText().toString().length() < 5) {
+                    allValid = false;
+                    password.setError("Password must be 5 characters long");
+                }
+
+                if (allValid) {
+                    String updateProfileUrl = url + "profile/" + user.email;
+
+                    RequestQueue queue = Volley.newRequestQueue(getContext());
+
+                    StringRequest postRequest = new StringRequest(Request.Method.POST, updateProfileUrl,
+                            new Response.Listener<String>() {
+                                @Override
+                                public void onResponse(String response) {
+                                    // response
+                                    Log.d("Response", response);
+
+                                    if (response.equals("Email id not found in Record")) {
+                                        Toast.makeText(getContext(), response, Toast.LENGTH_LONG).show();
+                                    } else {
+                                        Toast.makeText(getContext(), response, Toast.LENGTH_LONG).show();
+
+                                        String firstNameText = first.getText().toString();
+                                        String lastNameText = last.getText().toString();
+                                        String emailText = user.email;
+                                        String addressText = address.getText().toString();
+                                        String ageText = age.getText().toString();
+
+
+                                        User user = new User();
+
+                                        user.firstName = firstNameText;
+                                        user.lastName = lastNameText;
+                                        user.email = emailText;
+                                        user.address = addressText;
+                                        user.age = Integer.parseInt(ageText);
+
+                                        Gson gsonObject = new Gson();
+
+                                        SharedPreferences prefs = getActivity().getSharedPreferences("info", MODE_PRIVATE);
+                                        prefs.edit().putString("user", gsonObject.toJson(user)).commit();
+
+
+                                        Bundle bundle = new Bundle();
+                                        bundle.putString(AUTH_KEY, mAuthorizationkey);
+                                        navController.navigate(R.id.action_nav_edit_profile_to_nav_view_profile, bundle);
+                                    }
+
                                 }
-                                else{
-                                    Toast.makeText(getContext(), response, Toast.LENGTH_LONG).show();
-
-                                    String firstNameText = first.getText().toString();
-                                    String lastNameText = last.getText().toString();
-                                    String emailText = email.getText().toString();
-                                    String addressText = address.getText().toString();
-                                    String ageText = age.getText().toString();
-
-
-                                    User user = new User();
-
-                                    user.firstName = firstNameText;
-                                    user.lastName = lastNameText;
-                                    user.email = emailText;
-                                    user.address = addressText;
-                                    user.age = Integer.parseInt(ageText);
-
-                                    Gson gsonObject = new Gson();
-
-                                    SharedPreferences prefs = getActivity().getSharedPreferences("info", MODE_PRIVATE);
-                                    prefs.edit().putString("user", gsonObject.toJson(user)).commit();
-
-
-                                    Bundle bundle = new Bundle();
-                                    bundle.putString(AUTH_KEY, mAuthorizationkey);
-                                    navController.navigate(R.id.action_nav_edit_profile_to_nav_view_profile, bundle);
+                            },
+                            new Response.ErrorListener() {
+                                @Override
+                                public void onErrorResponse(VolleyError error) {
+                                    // error
+                                    NetworkResponse response = error.networkResponse;
+                                    String errorMsg = "";
+                                    if (response != null && response.data != null) {
+                                        String errorString = new String(response.data);
+                                        Log.i("log error", errorString);
+                                    }
                                 }
-
                             }
-                        },
-                        new Response.ErrorListener()
-                        {
-                            @Override
-                            public void onErrorResponse(VolleyError error) {
-                                // error
-                                NetworkResponse response = error.networkResponse;
-                                String errorMsg = "";
-                                if(response != null && response.data != null){
-                                    String errorString = new String(response.data);
-                                    Log.i("log error", errorString);
-                                }
-                            }
+                    ) {
+                        @Override
+                        protected Map<String, String> getParams() {
+                            String firstNameText = first.getText().toString();
+                            String lastNameText = last.getText().toString();
+                            String emailText = user.email;
+                            String addressText = address.getText().toString();
+                            String ageText = age.getText().toString();
+                            String passwordText = password.getText().toString();
+
+                            Map<String, String> params = new HashMap<String, String>();
+
+                            params.put("firstname", firstNameText);
+                            params.put("lastname", lastNameText);
+                            params.put("email", emailText);
+                            params.put("address", addressText);
+                            params.put("age", ageText);
+                            params.put("password", passwordText);
+
+
+                            return params;
                         }
-                ) {
-                    @Override
-                    protected Map<String, String> getParams()
-                    {
-                        String firstNameText = first.getText().toString();
-                        String lastNameText = last.getText().toString();
-                        String emailText = email.getText().toString();
-                        String addressText = address.getText().toString();
-                        String ageText = age.getText().toString();
-                        String passwordText = password.getText().toString();
 
-                        Map<String, String>  params = new HashMap<String, String>();
+                        @Override
+                        public Map<String, String> getHeaders() throws AuthFailureError {
+                            Map<String, String> params = new HashMap<String, String>();
+                            params.put("authorizationkey", mAuthorizationkey);
 
-                        params.put("firstname", firstNameText);
-                        params.put("lastname", lastNameText);
-                        params.put("email", emailText);
-                        params.put("address", addressText);
-                        params.put("age", ageText);
-                        params.put("password", passwordText);
+                            return params;
+                        }
+                    };
 
-
-                        return params;
-                    }
-
-                    @Override
-                    public Map<String, String> getHeaders() throws AuthFailureError {
-                        Map<String, String>  params = new HashMap<String, String>();
-                        params.put("authorizationkey", mAuthorizationkey);
-
-                        return params;
-                    }
-                };
-
-                queue.add(postRequest);
+                    queue.add(postRequest);
+                }
             }
         });
 

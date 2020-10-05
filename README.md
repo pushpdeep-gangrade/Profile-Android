@@ -2,6 +2,7 @@
 - [Authors](#authors)
 - [App Mockup](#mockup)
 - [Video Demo](#demo)
+- [API Documentation](#documentation)
 - tbd
 
 ## Authors <a name="authors"></a>
@@ -13,6 +14,112 @@
 ## App Mockup <a name="mockup"></a>
 
 ## Video Demo <a name="demo"></a>
+
+## API Documentation <a name="documentation"></a>
+<strong>Signup:</strong>
+```
+Method POST
+http://104.248.113.55:8080/signup
+
+<strong>Request:</strong>
+Body:
+{
+   "email" : "BobSmith@email.com"
+   "password" : "ExamplePassword"
+   "firstname" : "Bob"
+   "lastname" : "Smith"
+   "age" : "33"
+   "address" : "123 Example Street"
+}
+
+<strong>Response:</strong>
+Body:
+{
+   "email" : "BobSmith@email.com"
+   "password" : "ExamplePasword"
+   "firstname" : "Bob"
+   "lastname" : "Smith"
+   "age" : "33"
+   "address" : "123 Example Street"
+}
+```
+<strong>Login:</strong>
+```
+Method GET
+http://104.248.113.55:8080/login
+
+<strong>Request:</strong>
+Body:
+{
+   "email: : "BobSmith@email.com"
+   "password" : "ExamplePassword"
+}
+
+<strong>Response:</strong>
+Header:
+{
+   "AuthorizationKey" : "ExampleKeyReturnedFromLogin"
+}
+
+Body:
+{
+   "email" : "BobSmith@email.com"
+   "firstname" : "Bob"
+   "lastname" : "Smith"
+   "age" : "33"
+   "address" : "123 Example Street"
+}
+```
+Profile:
+```
+Method GET
+http://104.248.113.55:8080/profile/:email
+
+<strong>Request:</strong>
+Header:
+{
+   "authorizationkey" : "ExampleKeyReturnedFromLogin"
+}
+
+<strong>Response:</strong>
+Body:
+{
+   "email" : "BobSmith@email.com"
+   "firstname" : "Bob"
+   "lastname" : "Smith"
+   "age" : "33"
+   "address" : "123 Example Street"
+}
+
+Method POST
+http://104.248.113.55:8080/profile/:email
+<strong>Request:</strong>
+Header:
+{
+   "authorizationkey" : "ExampleKeyReturnedFromLogin"
+}
+
+Body:
+{
+   "email" : "BobSmith2020@email.com"
+   "password" : "ExamplePasswordChange"
+   "firstname" : "Robert"
+   "lastname" : "Smithton"
+   "age" : "35"
+   "address" : "123 Example Changed Street"
+}
+
+<strong>Response:</strong>
+Body:
+{
+   "email" : "BobSmith2020@email.com"
+   "password" : "ExamplePasswordChange"
+   "firstname" : "Robert"
+   "lastname" : "Smithton"
+   "age" : "35"
+   "address" : "123 Example Changed Street"
+}
+```
 
 ## Project requirements (cross out when fulfilled)
 ### Goal: Create a simple authentication API for mobile application

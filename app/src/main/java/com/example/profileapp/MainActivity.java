@@ -17,7 +17,7 @@ public class MainActivity extends AppCompatActivity {
 
     private static final String AUTH_KEY = "authorizationkey";
     private String mAuthorizationkey;
-    public static String url = "http://104.248.113.55:8080/";
+    public static String url = "http://104.248.113.55:8080/v1/user/";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {

@@ -26,7 +26,7 @@ import java.util.Map;
 public class SignUpActivity extends AppCompatActivity {
     EditText firstName, lastName, email, address, password, reEnterPassword, age;
     Button signUp, cancel;
-    String url = "http://104.248.113.55:8080/";
+    String url = "http://104.248.113.55:8080/v1/user/";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {

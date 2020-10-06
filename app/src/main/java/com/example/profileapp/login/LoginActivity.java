@@ -43,7 +43,7 @@ public class LoginActivity extends AppCompatActivity {
     Button login;
     EditText email, password;
     Button createAccount;
-    String url = "http://104.248.113.55:8080/";
+    String url = "http://104.248.113.55:8080/v1/user/";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {

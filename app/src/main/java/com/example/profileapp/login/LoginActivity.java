@@ -1,7 +1,6 @@
 package com.example.profileapp.login;
 
-import androidx.appcompat.app.AppCompatActivity;
-
+import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
@@ -11,6 +10,8 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.TextView;
 import android.widget.Toast;
+
+import androidx.appcompat.app.AppCompatActivity;
 
 import com.android.volley.NetworkResponse;
 import com.android.volley.Request;
@@ -22,15 +23,16 @@ import com.android.volley.toolbox.Volley;
 import com.example.profileapp.MainActivity;
 import com.example.profileapp.R;
 import com.example.profileapp.models.User;
-import com.example.profileapp.profile.ViewProfileFragment;
+import com.example.profileapp.profile.GetProfile;
 import com.example.profileapp.signup.SignUpActivity;
 import com.google.gson.Gson;
-import com.google.gson.JsonArray;
+import com.squareup.okhttp.OkHttpClient;
 
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.io.IOException;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -38,15 +40,24 @@ public class LoginActivity extends AppCompatActivity {
 
     private static final String AUTH_KEY = "authorizationkey";
     private String authkey;
-
     Button login;
     EditText email, password;
-    TextView createAccount;
+    Button createAccount;
     String url = "http://104.248.113.55:8080/";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        SharedPreferences sharedPref = getSharedPreferences("info",Context.MODE_PRIVATE);
+       // if(sharedPref!=null){
+            String a = sharedPref.getString("email","");
+            String b = sharedPref.getString("authKey","");
+            Log.d("demo","hello"+a+"   "+b);
+          //  if(!a.equals("") && !b.equals("")){
+                verifyToken(a,b);
+        //    }
+
+     //   }
         setContentView(R.layout.activity_login);
 
         email = findViewById(R.id.login_email);
@@ -63,56 +74,56 @@ public class LoginActivity extends AppCompatActivity {
                 RequestQueue queue = Volley.newRequestQueue(LoginActivity.this);
 
                 StringRequest postRequest = new StringRequest(Request.Method.POST, loginUrl,
-                        new Response.Listener<String>()
-                        {
+                        new Response.Listener<String>() {
                             @Override
                             public void onResponse(String response) {
                                 // response
                                 Log.d("Response", response);
-                                if(response.equals("Invalid Credentials")){
+                                if (response.equals("Invalid Credentials")) {
                                     Toast.makeText(LoginActivity.this, response, Toast.LENGTH_LONG).show();
-                                }
-                                else{
+                                } else {
                                     Gson gsonObject = new Gson();
-
                                     try {
                                         JSONArray arr = new JSONArray(response);
                                         JSONObject userObject = new JSONObject(String.valueOf(arr.get(0)));
                                         User user = new User();
-
                                         user.firstName = userObject.getString("fname");
                                         user.lastName = userObject.getString("lname");
                                         user.email = userObject.getString("emailId");
                                         user.address = userObject.getString("address");
                                         user.age = userObject.getInt("age");
 
-                                        SharedPreferences prefs = getSharedPreferences("info", MODE_PRIVATE);
-                                        prefs.edit().putString("user", gsonObject.toJson(user)).commit();
+//                                        SharedPreferences prefs = getSharedPreferences("info", MODE_PRIVATE);
+//                                        prefs.edit().putString("user", gsonObject.toJson(user)).commit();
 
-                                        Log.d("User", arr.get(0).toString());
+                                        SharedPreferences prefs = getSharedPreferences("info", MODE_PRIVATE);
+                                        prefs.edit().putString("email", user.email).commit();
+                                        prefs.edit().putString("authKey", authkey).commit();
+
+
                                     } catch (JSONException e) {
                                         e.printStackTrace();
                                     }
 
-                                    Toast.makeText(LoginActivity.this, "Login Successful", Toast.LENGTH_LONG).show();
+                                  //  Toast.makeText(LoginActivity.this, "Login Successful", Toast.LENGTH_LONG).show();
                                     Intent gotoMainActivity = new Intent(LoginActivity.this, MainActivity.class);
                                     Bundle authBundle = new Bundle();
-                                    Log.d("AuthKey", authkey);
+                                 //   Log.d("AuthKey", authkey);
                                     authBundle.putString(AUTH_KEY, authkey); //Your id
                                     gotoMainActivity.putExtras(authBundle); //Put your id to your next Intent
                                     startActivity(gotoMainActivity);
+                                    finish();
                                 }
 
                             }
                         },
-                        new Response.ErrorListener()
-                        {
+                        new Response.ErrorListener() {
                             @Override
                             public void onErrorResponse(VolleyError error) {
                                 // error
                                 NetworkResponse response = error.networkResponse;
                                 String errorMsg = "";
-                                if(response != null && response.data != null){
+                                if (response != null && response.data != null) {
                                     String errorString = new String(response.data);
                                     Log.i("log error", errorString);
                                 }
@@ -120,15 +131,11 @@ public class LoginActivity extends AppCompatActivity {
                         }
                 ) {
                     @Override
-                    protected Map<String, String> getParams()
-                    {
+                    protected Map<String, String> getParams() {
                         String emailText = email.getText().toString();
                         String passwordText = password.getText().toString();
 
-                        //emailText = "pushpdeepg@gmail.com";
-                        //passwordText = "pushpdeep";
-
-                        Map<String, String>  params = new HashMap<String, String>();
+                        Map<String, String> params = new HashMap<String, String>();
 
                         params.put("email", emailText);
                         params.put("password", passwordText);
@@ -152,9 +159,7 @@ public class LoginActivity extends AppCompatActivity {
                         return super.parseNetworkError(volleyError);
                     }
                 };
-
                 queue.add(postRequest);
-
 
             }
         });
@@ -168,4 +173,11 @@ public class LoginActivity extends AppCompatActivity {
         });
 
     }
+
+    public void verifyToken(String email, final String token){
+        GetProfile obj = new GetProfile(getApplicationContext(),token);
+        obj.execute(url + "profile/" + email);
+        }
+
+
 }

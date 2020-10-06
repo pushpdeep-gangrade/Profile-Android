@@ -32,7 +32,8 @@
         tools:layout="@layout/fragment_view_profile" >
         <action
             android:id="@+id/action_nav_view_profile_to_nav_edit_profile"
-            app:destination="@id/nav_edit_profile" />
+            app:destination="@id/nav_edit_profile"
+            app:popUpTo="@id/nav_view_profile" />
         <action
             android:id="@+id/action_nav_view_profile_self"
             app:destination="@id/nav_view_profile" />
@@ -45,6 +46,8 @@
         tools:layout="@layout/fragment_edit_profile" >
         <action
             android:id="@+id/action_nav_edit_profile_to_nav_view_profile"
-            app:destination="@id/nav_view_profile" />
+            app:destination="@id/nav_view_profile"
+            app:popUpTo="@id/nav_edit_profile"
+            app:popUpToInclusive="true" />
     </fragment>
 </navigation>

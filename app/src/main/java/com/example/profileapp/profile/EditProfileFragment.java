@@ -1,5 +1,6 @@
 package com.example.profileapp.profile;
 
+import android.content.Context;
 import android.content.SharedPreferences;
 import android.os.Bundle;
 
@@ -47,6 +48,7 @@ public class EditProfileFragment extends Fragment {
     private NavController navController;
     private User user = new User();
     private Boolean allValid = false;
+
 
     // TODO: Rename parameter arguments, choose names that match
     // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
@@ -102,10 +104,15 @@ public class EditProfileFragment extends Fragment {
         final EditText age = view.findViewById(R.id.editProfile_age);
         final EditText password = view.findViewById(R.id.editProfile_password);
 
-
         User currentUser = gson.fromJson(prefs.getString("user", null), User.class);
+        String email = "";
+        if(prefs!=null) {
+             email = prefs.getString("email","");
+        }
 
-        String profileUrl = MainActivity.url + "profile/" + currentUser.email;
+
+
+        String profileUrl = MainActivity.url + "profile/" + email;
 
         RequestQueue queue = Volley.newRequestQueue(getContext());
 
@@ -140,7 +147,7 @@ public class EditProfileFragment extends Fragment {
                                 e.printStackTrace();
                             }
 
-                            Toast.makeText(getContext(), "Loaded User Profile", Toast.LENGTH_LONG).show();
+                          //  Toast.makeText(getContext(), "Loaded User Profile", Toast.LENGTH_LONG).show();
                         }
 
                     }

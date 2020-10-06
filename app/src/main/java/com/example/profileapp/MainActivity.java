@@ -5,6 +5,8 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.navigation.NavController;
 import androidx.navigation.fragment.NavHostFragment;
 
+import android.content.Context;
+import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -21,10 +23,13 @@ public class MainActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-
-        if (getIntent().getStringExtra(AUTH_KEY) != null) {
-            mAuthorizationkey = getIntent().getStringExtra(AUTH_KEY);
+        SharedPreferences sharedPref = getSharedPreferences("info", Context.MODE_PRIVATE);
+        if(sharedPref!=null){
+            mAuthorizationkey = sharedPref.getString("authKey","");
         }
+//        if (getIntent().getStringExtra(AUTH_KEY) != null) {
+//            mAuthorizationkey = getIntent().getStringExtra(AUTH_KEY);
+//        }
 
         MaterialToolbar toolbar = findViewById(R.id.topAppBar);
         setSupportActionBar(toolbar);
@@ -50,6 +55,8 @@ public class MainActivity extends AppCompatActivity {
         // Handle item selection
         switch (item.getItemId()) {
             case R.id.logout:
+                SharedPreferences settings = getSharedPreferences("info", Context.MODE_PRIVATE);
+                settings.edit().clear().commit();
                 finish();
                 return true;
             default:

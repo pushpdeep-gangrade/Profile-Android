@@ -12,6 +12,7 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.EditText;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -67,9 +68,10 @@ public class ViewProfileFragment extends Fragment {
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+
         if (getArguments() != null) {
             mAuthorizationkey = getArguments().getString(AUTH_KEY);
-            Log.d("ViewProfileFragment", mAuthorizationkey);
+      //      Log.d("ViewProfileFragment", mAuthorizationkey);
         }
     }
 
@@ -110,11 +112,11 @@ public class ViewProfileFragment extends Fragment {
 
 
         SharedPreferences prefs = this.getActivity().getSharedPreferences("info", MODE_PRIVATE);
-
+        String email = prefs.getString("email","");
         Gson gson = new Gson();
         User currentUser = gson.fromJson(prefs.getString("user", null), User.class);
 
-        String profileUrl = MainActivity.url + "profile/" + currentUser.email;
+        String profileUrl = MainActivity.url + "profile/" + email;
 
         RequestQueue queue = Volley.newRequestQueue(getContext());
 
@@ -141,11 +143,18 @@ public class ViewProfileFragment extends Fragment {
                                 user.address = userObject.getString("address");
                                 user.age = userObject.getInt("age");
 
-                                TextView first = view.findViewById(R.id.viewProfile_firstNameText);
-                                TextView last = view.findViewById(R.id.viewProfile_lastNameText);
-                                TextView email = view.findViewById(R.id.viewProfile_emailText);
-                                TextView address = view.findViewById(R.id.viewProfile_addressText);
-                                TextView age = view.findViewById(R.id.viewProfile_ageText);
+                                EditText first = view.findViewById(R.id.viewProfile_firstNameText);
+                                EditText last = view.findViewById(R.id.viewProfile_lastNameText);
+                                EditText email = view.findViewById(R.id.viewProfile_emailText);
+                                EditText address = view.findViewById(R.id.viewProfile_addressText);
+                                EditText age = view.findViewById(R.id.viewProfile_ageText);
+
+                                first.setEnabled(false);
+                                last.setEnabled(false);
+                                email.setEnabled(false);
+                                address.setEnabled(false);
+                                age.setEnabled(false);
+
 
                                 first.setText(user.firstName);
                                 last.setText(user.lastName);
@@ -158,7 +167,7 @@ public class ViewProfileFragment extends Fragment {
                                 e.printStackTrace();
                             }
 
-                            Toast.makeText(getContext(), "Loaded User Profile", Toast.LENGTH_LONG).show();
+                         //   Toast.makeText(getContext(), "Loaded User Profile", Toast.LENGTH_LONG).show();
                         }
 
                     }

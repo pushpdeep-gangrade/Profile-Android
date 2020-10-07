@@ -2,9 +2,9 @@
     <string name="app_name">Profile App</string>
     <string name="logout">Logout</string>
     <string name="login">LOGIN</string>
-    <string name="signup">Sign Up</string>
+    <string name="signup">SIGN UP</string>
     <string name="cancel">Cancel</string>
-    <string name="profile">Profile</string>
+    <string name="profile">PROFILE</string>
     <string name="edit_profile">Edit Profile</string>
     <string name="save">Save</string>
     <string name="first_name_hint">First Name</string>

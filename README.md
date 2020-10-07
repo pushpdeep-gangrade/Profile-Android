@@ -19,9 +19,11 @@
 <strong>Signup:</strong>
 <br />
 <img src="https://github.com/pushpdeep-gangrade/Profile-Android/blob/main/screenshots/SignupDocumentationAPI.png" width=800>
+<br />
 <strong>Login:</strong>
 <br />
 <img src="https://github.com/pushpdeep-gangrade/Profile-Android/blob/main/screenshots/LoginDocumentationAPI.png" width=800>
+<br />
 Profile:
 <br />
 <img src="https://github.com/pushpdeep-gangrade/Profile-Android/blob/main/screenshots/ProfileDocumentationGETAPI.png" width=800>

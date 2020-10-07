@@ -15,6 +15,7 @@
 
 ## Video Demo <a name="demo"></a>
 - App Demo: https://youtu.be/YlHDhZJQv78
+- Postman Demo: https://youtu.be/Frp-nyx03F8
 
 ## API Documentation <a name="documentation"></a>
 <strong>Sign Up:</strong>

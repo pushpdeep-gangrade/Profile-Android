@@ -13,6 +13,7 @@
         android:layout_height="wrap_content"
         android:fontFamily="@font/aldrich"
         android:text="@string/profile"
+        android:textAllCaps="true"
         android:textColor="@color/colorAccent"
         android:textSize="32sp"
         android:textStyle="bold"

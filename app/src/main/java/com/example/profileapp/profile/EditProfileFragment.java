@@ -1,6 +1,5 @@
 package com.example.profileapp.profile;
 
-import android.content.Context;
 import android.content.SharedPreferences;
 import android.os.Bundle;
 
@@ -14,10 +13,8 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.EditText;
-import android.widget.TextView;
 import android.widget.Toast;
 
-import com.android.volley.AuthFailureError;
 import com.android.volley.NetworkResponse;
 import com.android.volley.Request;
 import com.android.volley.RequestQueue;
@@ -27,9 +24,7 @@ import com.android.volley.toolbox.StringRequest;
 import com.android.volley.toolbox.Volley;
 import com.example.profileapp.MainActivity;
 import com.example.profileapp.R;
-import com.example.profileapp.login.LoginActivity;
 import com.example.profileapp.models.User;
-import com.example.profileapp.signup.SignUpActivity;
 import com.google.gson.Gson;
 
 import org.json.JSONArray;
@@ -44,9 +39,8 @@ import static com.example.profileapp.MainActivity.url;
 
 public class EditProfileFragment extends Fragment {
     View view;
-    private NavHostFragment navHostFragment;
     private NavController navController;
-    private User user = new User();
+    private final User user = new User();
     private Boolean allValid = false;
 
 
@@ -59,15 +53,6 @@ public class EditProfileFragment extends Fragment {
 
     public EditProfileFragment() {
         // Required empty public constructor
-    }
-
-    // TODO: Rename and change types and number of parameters
-    public static EditProfileFragment newInstance(String authorizationkey) {
-        EditProfileFragment fragment = new EditProfileFragment();
-        Bundle args = new Bundle();
-        args.putString(AUTH_KEY, authorizationkey);
-        fragment.setArguments(args);
-        return fragment;
     }
 
     @Override
@@ -94,7 +79,7 @@ public class EditProfileFragment extends Fragment {
         Button save = view.findViewById(R.id.save_edit_profile_button);
 
 
-        navHostFragment = (NavHostFragment) getActivity().getSupportFragmentManager().findFragmentById(R.id.nav_host_fragment);
+        NavHostFragment navHostFragment = (NavHostFragment) getActivity().getSupportFragmentManager().findFragmentById(R.id.nav_host_fragment);
         navController = navHostFragment.getNavController();
 
 
@@ -105,10 +90,9 @@ public class EditProfileFragment extends Fragment {
         final EditText password = view.findViewById(R.id.editProfile_password);
 
         User currentUser = gson.fromJson(prefs.getString("user", null), User.class);
-        String email = "";
-        if(prefs!=null) {
-             email = prefs.getString("email","");
-        }
+        String email;
+        email = prefs.getString("email","");
+
 
 
 
@@ -167,8 +151,8 @@ public class EditProfileFragment extends Fragment {
                 }
         ) {
             @Override
-            public Map<String, String> getHeaders() throws AuthFailureError {
-                Map<String, String>  params = new HashMap<String, String>();
+            public Map<String, String> getHeaders() {
+                Map<String, String>  params = new HashMap<>();
                 params.put("authorizationkey", mAuthorizationkey);
 
                 return params;
@@ -206,7 +190,7 @@ public class EditProfileFragment extends Fragment {
 
                 if (password.getText() == null || password.getText().toString().equals("") || password.getText().toString().length() < 5) {
                     allValid = false;
-                    password.setError("Password must be 5 characters long");
+                    password.setError("Enter your password to make changes");
                 }
 
                 if (allValid) {
@@ -276,7 +260,7 @@ public class EditProfileFragment extends Fragment {
                             String ageText = age.getText().toString();
                             String passwordText = password.getText().toString();
 
-                            Map<String, String> params = new HashMap<String, String>();
+                            Map<String, String> params = new HashMap<>();
 
                             params.put("firstname", firstNameText);
                             params.put("lastname", lastNameText);
@@ -290,8 +274,8 @@ public class EditProfileFragment extends Fragment {
                         }
 
                         @Override
-                        public Map<String, String> getHeaders() throws AuthFailureError {
-                            Map<String, String> params = new HashMap<String, String>();
+                        public Map<String, String> getHeaders() {
+                            Map<String, String> params = new HashMap<>();
                             params.put("authorizationkey", mAuthorizationkey);
 
                             return params;

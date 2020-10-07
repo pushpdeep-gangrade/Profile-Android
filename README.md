@@ -16,7 +16,7 @@
 ## Video Demo <a name="demo"></a>
 
 ## API Documentation <a name="documentation"></a>
-<strong>Signup:</strong>
+<strong>Sign Up:</strong>
 <br />
 <img src="https://github.com/pushpdeep-gangrade/Profile-Android/blob/main/screenshots/SignupDocumentationAPI.png" width=800>
 <br />

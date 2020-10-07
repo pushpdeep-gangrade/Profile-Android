@@ -1,16 +1,13 @@
 package com.example.profileapp.profile;
 
-import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.AsyncTask;
-import android.os.Bundle;
 import android.util.Log;
 import android.widget.Toast;
 
 import com.example.profileapp.MainActivity;
-import com.example.profileapp.login.LoginActivity;
 import com.squareup.okhttp.OkHttpClient;
 
 import java.io.IOException;
@@ -18,18 +15,13 @@ import java.net.MalformedURLException;
 import java.net.URL;
 
 public class GetProfile extends AsyncTask<String, Void, Integer> {
-     Context context;
-     String token;
+     final Context context;
+     final String token;
 
     public GetProfile(Context context, String token) {
         this.context = context;
         this.token = token;
     }
-    //    public GetProfile(Exception exception) {
-//        this.exception = exception;
-//    }
-//
-       private Exception exception;
 
     protected Integer doInBackground(String... urls) {
         com.squareup.okhttp.Response response = null;
@@ -45,14 +37,9 @@ public class GetProfile extends AsyncTask<String, Void, Integer> {
                 Log.d("res",url.toString());
                response = client.newCall(request).execute();
                Log.d("res", String.valueOf(response));
-            } catch (IOException e) {
-
             } catch (Exception e) {
-                this.exception = e;
 
                 return null;
-            } finally {
-
             }
         } catch (MalformedURLException e) {
             e.printStackTrace();

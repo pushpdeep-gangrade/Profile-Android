@@ -6,6 +6,7 @@ import androidx.navigation.NavController;
 import androidx.navigation.fragment.NavHostFragment;
 
 import android.content.Context;
+import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.view.Menu;
@@ -17,7 +18,9 @@ public class MainActivity extends AppCompatActivity {
 
     private static final String AUTH_KEY = "authorizationkey";
     private String mAuthorizationkey;
-    public static String url = "http://104.248.113.55:8080/v1/user/";
+    public static final String url = "http://104.248.113.55:8080/v1/user/";
+    private NavController navController;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -35,7 +38,7 @@ public class MainActivity extends AppCompatActivity {
         setSupportActionBar(toolbar);
 
         NavHostFragment navHostFragment = (NavHostFragment) getSupportFragmentManager().findFragmentById(R.id.nav_host_fragment);
-        NavController navController = navHostFragment.getNavController();
+        navController = navHostFragment.getNavController();
         Bundle authBundle = new Bundle();
         authBundle.putString(AUTH_KEY, mAuthorizationkey);
         navController.setGraph(navController.getGraph(), authBundle);
@@ -53,15 +56,13 @@ public class MainActivity extends AppCompatActivity {
     @Override
     public boolean onOptionsItemSelected(@NonNull MenuItem item) {
         // Handle item selection
-        switch (item.getItemId()) {
-            case R.id.logout:
-                SharedPreferences settings = getSharedPreferences("info", Context.MODE_PRIVATE);
-                settings.edit().clear().commit();
-                finish();
-                return true;
-            default:
-                return super.onOptionsItemSelected(item);
+        if (item.getItemId() == R.id.logout) {
+            SharedPreferences settings = getSharedPreferences("info", Context.MODE_PRIVATE);
+            settings.edit().clear().commit();
+            navController.navigate(R.id.action_nav_view_profile_to_nav_logout2);
+            return true;
         }
+        return super.onOptionsItemSelected(item);
     }
 
 }

@@ -15,6 +15,7 @@
         android:layout_marginTop="16dp"
         android:fontFamily="@font/aldrich"
         android:text="@string/signup"
+        android:textAllCaps="true"
         android:textColor="@color/colorAccent"
         android:textSize="32sp"
         android:textStyle="bold"

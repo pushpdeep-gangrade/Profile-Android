@@ -8,7 +8,6 @@ import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
-import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
@@ -26,13 +25,11 @@ import com.example.profileapp.models.User;
 import com.example.profileapp.profile.GetProfile;
 import com.example.profileapp.signup.SignUpActivity;
 import com.google.gson.Gson;
-import com.squareup.okhttp.OkHttpClient;
 
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
-import java.io.IOException;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -43,7 +40,7 @@ public class LoginActivity extends AppCompatActivity {
     Button login;
     EditText email, password;
     Button createAccount;
-    String url = "http://104.248.113.55:8080/v1/user/";
+    final String url = "http://104.248.113.55:8080/v1/user/";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -135,7 +132,7 @@ public class LoginActivity extends AppCompatActivity {
                         String emailText = email.getText().toString();
                         String passwordText = password.getText().toString();
 
-                        Map<String, String> params = new HashMap<String, String>();
+                        Map<String, String> params = new HashMap<>();
 
                         params.put("email", emailText);
                         params.put("password", passwordText);

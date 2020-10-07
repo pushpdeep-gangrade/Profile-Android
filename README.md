@@ -17,6 +17,8 @@
 
 ## API Documentation <a name="documentation"></a>
 <strong>Signup:</strong>
+<br />
+<img src="https://github.com/pushpdeep-gangrade/Profile-Android/blob/main/screenshots/SignupDocumentationAPI.png" width=500>
 ```
 Method POST
 http://104.248.113.55:8080/signup

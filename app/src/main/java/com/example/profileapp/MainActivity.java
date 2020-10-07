@@ -13,6 +13,7 @@ import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 
+import com.example.profileapp.login.LoginActivity;
 import com.example.profileapp.profile.EditProfileFragment;
 import com.google.android.material.appbar.MaterialToolbar;
 
@@ -66,7 +67,10 @@ public class MainActivity extends AppCompatActivity {
                 navController.navigate(R.id.action_nav_edit_profile_to_nav_logout);
             }
             else { */
-                navController.navigate(R.id.action_nav_view_profile_to_nav_logout2);
+                //navController.navigate(R.id.action_nav_view_profile_to_nav_logout2);
+            Intent goBackToLogin = new Intent(this, LoginActivity.class);
+            startActivity(goBackToLogin);
+            finish();
  //           }
             return true;
         }

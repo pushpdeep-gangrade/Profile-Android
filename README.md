@@ -18,112 +18,15 @@
 ## API Documentation <a name="documentation"></a>
 <strong>Signup:</strong>
 <br />
-<img src="https://github.com/pushpdeep-gangrade/Profile-Android/blob/main/screenshots/SignupDocumentationAPI.png" width=500>
-```
-Method POST
-http://104.248.113.55:8080/signup
-
-|Request|
-Body:
-{
-   "email" : "BobSmith@email.com"
-   "password" : "ExamplePassword"
-   "firstname" : "Bob"
-   "lastname" : "Smith"
-   "age" : "33"
-   "address" : "123 Example Street"
-}
-
-|Response|
-Body:
-{
-   "email" : "BobSmith@email.com"
-   "password" : "ExamplePasword"
-   "firstname" : "Bob"
-   "lastname" : "Smith"
-   "age" : "33"
-   "address" : "123 Example Street"
-}
-```
+<img src="https://github.com/pushpdeep-gangrade/Profile-Android/blob/main/screenshots/SignupDocumentationAPI.png" width=800>
 <strong>Login:</strong>
-```
-Method GET
-http://104.248.113.55:8080/login
-
-|Request|
-Body:
-{
-   "email: : "BobSmith@email.com"
-   "password" : "ExamplePassword"
-}
-
-|Response|
-Header:
-{
-   "AuthorizationKey" : "ExampleKeyReturnedFromLogin"
-}
-
-Body:
-{
-   "email" : "BobSmith@email.com"
-   "firstname" : "Bob"
-   "lastname" : "Smith"
-   "age" : "33"
-   "address" : "123 Example Street"
-}
-```
+<br />
+<img src="https://github.com/pushpdeep-gangrade/Profile-Android/blob/main/screenshots/LoginDocumentationAPI.png" width=800>
 Profile:
-```
-Method GET
-http://104.248.113.55:8080/profile/:email
-
-|Request|
-Header:
-{
-   "authorizationkey" : "ExampleKeyReturnedFromLogin"
-}
-
-|Response|
-Body:
-{
-   "email" : "BobSmith@email.com"
-   "firstname" : "Bob"
-   "lastname" : "Smith"
-   "age" : "33"
-   "address" : "123 Example Street"
-}
-```
-```
-Method POST
-http://104.248.113.55:8080/profile/:email
-
-|Request|
-Header:
-{
-   "authorizationkey" : "ExampleKeyReturnedFromLogin"
-}
-
-Body:
-{
-   "email" : "BobSmith2020@email.com"
-   "password" : "ExamplePasswordChange"
-   "firstname" : "Robert"
-   "lastname" : "Smithton"
-   "age" : "35"
-   "address" : "123 Example Changed Street"
-}
-
-|Response|
-Body:
-{
-   "email" : "BobSmith2020@email.com"
-   "password" : "ExamplePasswordChange"
-   "firstname" : "Robert"
-   "lastname" : "Smithton"
-   "age" : "35"
-   "address" : "123 Example Changed Street"
-}
-```
+<br />
+<img src="https://github.com/pushpdeep-gangrade/Profile-Android/blob/main/screenshots/ProfileDocumentationGETAPI.png" width=800>
+<br />
+<img src="https://github.com/pushpdeep-gangrade/Profile-Android/blob/main/screenshots/ProfileDocumentationPOSTAPI.png" width=800>
 
 ## Project requirements (cross out when fulfilled)
 ### Goal: Create a simple authentication API for mobile application
@@ -138,15 +41,15 @@ Body:
    - an error reporting mechanism. All data returned by the API should be in JSON.
 5. ~~The API can be implemented using NodeJS and Express Framework.~~
 6. ~~The API should be deployed on a remote server, which means local host is not acceptable for your submission.~~ 
-   The user data profile information should be stored on a remote database, you can use MongoDB or any database of your choice.
+   ~~The user data profile information should be stored on a remote database, you can use MongoDB or any database of your choice.~~
 7. Mobile App: 
-   - API should be connected to the mobile application, and should also demonstrate the protected API.
+   - ~~API should be connected to the mobile application, and should also demonstrate the protected API.~~
    - ~~Sign Up (Registration), Login, Profile Screen.~~
    - ~~The profile screen should allow the user to view and edit their profile information.~~
 8. Submission should include:
    - ~~Create a Github or Bitbucket repo for the assignment~~
-   - Push your code to the created repo. Should contain both the mobile and web code. 
-   - On the same repo create a wiki page describing your api design and implementation. The wiki page should describe the API routes, DB Schema and all the assumptions required to provide authentication. In addition describe any data that is stored on the device or on the server.
-   - Include the Postman file in the repo.
+   - ~~Push your code to the created repo. Should contain both the mobile~~ and web code. 
+   - ~~On the same repo create a wiki page describing your api design and implementation.~~ The wiki page should describe the API routes, DB Schema and all the assumptions required to provide authentication. In addition describe any data that is stored on the device or on the server.
+   - ~~Include the Postman file in the repo.~~
    - The API should be demonstrated using Postman, you should create an api component in Postman for each of your created APIs.
    - Demo your API using a mobile app that uses your implemented api.

@@ -3,7 +3,6 @@
 - [App Mockup](#mockup)
 - [Video Demo](#demo)
 - [API Documentation](#documentation)
-- tbd
 
 ## Authors <a name="authors"></a>
 - Pushdeep Gangrade
@@ -14,6 +13,8 @@
 ## App Mockup <a name="mockup"></a>
 
 ## Video Demo <a name="demo"></a>
+- App Demo: https://youtu.be/YlHDhZJQv78
+- Postman Demo:
 
 ## API Documentation <a name="documentation"></a>
 <strong>Sign Up:</strong>

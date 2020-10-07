@@ -1,8 +1,8 @@
 <resources>
     <string name="app_name">Profile App</string>
     <string name="logout">Logout</string>
-    <string name="login">Login</string>
-    <string name="signup">Signup</string>
+    <string name="login">LOGIN</string>
+    <string name="signup">Sign Up</string>
     <string name="cancel">Cancel</string>
     <string name="profile">Profile</string>
     <string name="edit_profile">Edit Profile</string>

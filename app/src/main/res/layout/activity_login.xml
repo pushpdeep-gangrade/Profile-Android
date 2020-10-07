@@ -4,15 +4,19 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:background="@drawable/purple_background"
     tools:context=".login.LoginActivity">
 
     <TextView
         android:id="@+id/textView2"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginTop="48dp"
+        android:layout_marginTop="32dp"
+        android:fontFamily="@font/aldrich"
         android:text="@string/login"
+        android:textColor="@color/colorAccent"
         android:textSize="32sp"
+        android:textStyle="bold"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
@@ -21,7 +25,9 @@
         android:id="@+id/login_email"
         android:layout_width="360dp"
         android:layout_height="wrap_content"
-        android:layout_marginTop="64dp"
+        android:layout_marginTop="72dp"
+        android:autoText="false"
+        android:autofillHints=""
         android:ems="10"
         android:hint="@string/email_hint"
         android:inputType="textEmailAddress"
@@ -44,20 +50,30 @@
 
     <Button
         android:id="@+id/login_loginButton"
+        style="@style/Widget.AppCompat.Button.Colored"
         android:layout_width="360dp"
         android:layout_height="wrap_content"
-        android:layout_marginTop="32dp"
+        android:layout_marginTop="64dp"
+        android:background="#4814BD"
+        android:fontFamily="@font/aldrich"
         android:text="@string/login"
+        android:textColor="@color/colorAccent"
+        android:textStyle="bold"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/login_password" />
 
     <Button
         android:id="@+id/login_createAccountLink"
+        style="@style/Widget.AppCompat.Button.Colored"
         android:layout_width="360dp"
         android:layout_height="wrap_content"
         android:layout_marginTop="16dp"
+        android:background="@color/colorPrimaryDark"
+        android:fontFamily="@font/aldrich"
         android:text="@string/signup"
+        android:textColor="@color/colorAccent"
+        android:textStyle="bold"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.498"
         app:layout_constraintStart_toStartOf="parent"

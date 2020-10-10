@@ -11,7 +11,7 @@ const swaggerUi = require('swagger-ui-express');
 
 const MongoClient = require('mongodb').MongoClient;
 const url = "mongodb+srv://Pushp:pushp@a-mad-cluster.1u5jl.mongodb.net/API?retryWrites=true&w=majority";
-const client = new MongoClient(url ,{ useNewUrlParser: true, useUnifiedTopology: true });
+//const client = new MongoClient(url ,{ useNewUrlParser: true, useUnifiedTopology: true });
 
 app.use(cors());
 
@@ -75,118 +75,107 @@ app.use('/v1/user/profile',function(req,res,next){
 });
 
 app.post('/v1/user/login',function(req,res){
-  if(typeof req.body.email === "undefined" || typeof req.body.password === "undefined"){
-  res.status(BAD_REQUEST).send("Bad request Check request Body");
-}
-    else{
-      client.connect().then(() => {
-             var myObj = { emailId: req.body.email,
-                           password: req.body.password};
-            // var projection = { emailId : 1};
-        return client.db('API').collection('User').findOne(myObj,function (err,result){
-          if (err)
-           res.status(INTERNAL_SERVER_ERROR).send(err);
-           else if(result == null)
-             res.status(OK).send("Invalid Credentials");
-            else if(result !=null){
-                     var token = jwt.sign({ emailId: req.body.email,}, 'secret',{expiresIn : 60 * 60} );
-                 res.header("AuthorizationKey", token).status(OK).send(result);
-               }
-            //   return projection;
-             }).then(() => {
+  if (typeof req.body.email === "undefined" || typeof req.body.password === "undefined"){
+    res.status(BAD_REQUEST).send("Bad request Check request Body");
+  } else {
+    client = new MongoClient(url, { useNewUrlParser: true, useUnifiedTopology: true });
+    client.connect().then(() => {
+      var myObj = {
+        emailId: req.body.email,
+        password: req.body.password
+      };
+      client.db('API').collection('User').findOne(myObj,function (err,result){
+        if (err)
+          res.status(INTERNAL_SERVER_ERROR).send(err);
+        else if(result == null)
+          res.status(OK).send("Invalid Credentials");
+        else if(result !=null){
+          var token = jwt.sign({ emailId: req.body.email,}, 'secret',{expiresIn : 60 * 60} );
+          res.header("AuthorizationKey", token).status(OK).send(result);
+        }
         return client.close();
-      }).catch(e => {
-    console.error('query error', e)
-  })
-    }).catch(function () {
-     console.log("Promise Rejected");
-});
-
-}
+      })
+    });
+  }
 });
 
 app.get('/v1/user/profile/:email',function(req,res){
   console.log("get" + req.encode);
   if(!req.params){
-  res.status(BAD_REQUEST).send("Bad request Check parameters");}
-  else{
-
+    res.status(BAD_REQUEST).send("Bad request Check parameters");
+  }
+  else {
+    client = new MongoClient(url, { useNewUrlParser: true, useUnifiedTopology: true });
     client.connect().then(() => {
-      return client.db('API').collection('User').findOne({ _id :req.encode},function (err,result){
-
-        if (err) console.log(err);
-        else{
-          res.status(OK).send(result);}
-           }).then(() => {
-      return client.close();
-    }).catch(e => {
-  console.error('query error', e)
-})
-  }).catch(function () {
-   console.log("Promise Rejected");
-});
+      client.db('API').collection('User').findOne({ _id :req.encode},function (err,result){
+        if (err)
+          console.log(err);
+        else {
+          res.status(OK).send(result);
+        }
+        return client.close();
+      })
+    });
   }
 });
 
 app.post('/v1/user/profile/:email',function(req,res){
-  if(typeof req.body.password === "undefined" || typeof req.body.age === "undefined"
-  || typeof req.body.firstname === "undefined" || typeof req.body.lastname === "undefined" || typeof req.body.address === "undefined"){
-  res.status(BAD_REQUEST).send("Bad request Check parameters or Body");
-}
-    else{
-      client.connect().then(() => {
-        var myquery = { _id: req.encode };
-        var newvalues = { $set: { password: req.body.password,
-                      age :req.body.age ,
-                      fname : req.body.firstname,
-                      lname: req.body.lastname ,
-                      address: req.body.address } };
-        return client.db('API').collection('User').updateOne(myquery, newvalues,function (err,result){
-             if (err)
-             res.status(INTERNAL_SERVER_ERROR).send(err);
-             else
-             res.status(OK).send("Record Updated");
-             }).then(() => {
+  if (typeof req.body.password === "undefined" || typeof req.body.age === "undefined" ||
+  typeof req.body.firstname === "undefined" || typeof req.body.lastname === "undefined" ||
+  typeof req.body.address === "undefined"){
+    res.status(BAD_REQUEST).send("Bad request Check parameters or Body");
+  } else {
+    client = new MongoClient(url, { useNewUrlParser: true, useUnifiedTopology: true });
+    client.connect().then(() => {
+      var myquery = { _id: req.encode };
+      var newvalues = {
+        $set: {
+          password: req.body.password,
+          age :req.body.age ,
+          fname : req.body.firstname,
+          lname: req.body.lastname,
+          address: req.body.address
+        }
+      };
+      client.db('API').collection('User').updateOne(myquery, newvalues,function (err,result){
+        if (err)
+          res.status(INTERNAL_SERVER_ERROR).send(err);
+        else {
+          res.status(OK).send("Record Updated");
+        }
         return client.close();
-      }).catch(e => {
-      console.error('query error', e)
       })
-      }).catch(function () {
-      console.log("Promise Rejected");
-      });
-
-}
+    });
+  }
 });
 
 
 app.post('/v1/user/signup', (req, res) => {
-if(typeof req.body.email === "undefined" || typeof req.body.password === "undefined" || typeof req.body.age === "undefined"
-|| typeof req.body.firstname === "undefined" || typeof req.body.lastname === "undefined" || typeof req.body.address === "undefined")
-  res.status(BAD_REQUEST).send("Bad request Check parameters or Body");
-  else{
+  if(typeof req.body.email === "undefined" || typeof req.body.password === "undefined" || typeof req.body.age === "undefined" ||
+  typeof req.body.firstname === "undefined" || typeof req.body.lastname === "undefined" || typeof req.body.address === "undefined"){
+    res.status(BAD_REQUEST).send("Bad request Check parameters or Body");
+  } else {
+    client = new MongoClient(url, { useNewUrlParser: true, useUnifiedTopology: true });
     client.connect().then(() => {
-      var myobj = { _id : req.body.email,
-                    emailId: req.body.email ,
-                    password: req.body.password,
-                    age :req.body.age ,
-                    fname : req.body.firstname,
-                    lname: req.body.lastname ,
-                    address: req.body.address };
-      return client.db('API').collection('User').insertOne(myobj,function (err,result){
+      var myobj = {
+        _id : req.body.email,
+        emailId: req.body.email,
+        password: req.body.password,
+        age: req.body.age ,
+        fname: req.body.firstname,
+        lname: req.body.lastname,
+        address: req.body.address 
+      };
+      client.db('API').collection('User').insertOne(myobj,function (err,result){
         if (err) {
-             res.status(INTERNAL_SERVER_ERROR).send(err);}
-        else if(result.insertedCount == 1){
-         res.status(OK).send("Signed up Successfully");
+          res.status(INTERNAL_SERVER_ERROR).send(err);
+        } else if(result.insertedCount == 1){
+          res.status(OK).send("Signed up Successfully");
         }
-           }).then(() => {
-      return client.close();
-    }).catch(e => {
-    console.error('query error', e)
-    })
-    }).catch(function () {
-    console.log("Promise Rejected");
+        return client.close();
+      })
     });
-}
+  }
 });
 
 app.listen(port, (req, res) => {

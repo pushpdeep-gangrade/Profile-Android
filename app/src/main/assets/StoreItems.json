@@ -1,0 +1,36 @@
+{
+    "storeItems": [
+        {
+            "name": "Oranges",
+            "photo": "Oranges.jpeg",
+            "region": "produce",
+            "price": 0.89,
+            "discount": 0.1,
+            "quantity": 0
+        },
+        {
+            "name": "Bananas",
+            "photo": "Bananas.jpg",
+            "region": "produce",
+            "price": 0.89,
+            "discount": 0.1,
+            "quantity": 0
+        },
+        {
+            "name": "Apples",
+            "photo": "Apples.jpeg",
+            "region": "produce",
+            "price": 0.89,
+            "discount": 0.1,
+            "quantity": 0
+        },
+        {
+            "name": "Grapes",
+            "photo": "Grapes.jpeg",
+            "region": "produce",
+            "price": 0.89,
+            "discount": 0.1,
+            "quantity": 0
+        }
+    ]
+}

@@ -44,10 +44,11 @@ const swaggerOptions ={
     apis: ["api.js"]
 }
 
+//Swagger (Middleware)
 const swaggerSpec = swaggerJSDoc(swaggerOptions);
 app.use('/api-docs', swaggerUi.serve, swaggerUi.setup(swaggerSpec));
 
-
+//Check JWT Token [on Profile Endpoints] (Middleware)
 app.use('/v1/user/profile',function(req,res,next){
   try {
     if(!req.headers.authorizationkey){
@@ -74,6 +75,36 @@ app.use('/v1/user/profile',function(req,res,next){
 }
 });
 
+//Sign User Up With Passed Information (POST)
+app.post('/v1/user/signup', (req, res) => {
+  if(typeof req.body.email === "undefined" || typeof req.body.password === "undefined" || typeof req.body.age === "undefined" ||
+  typeof req.body.firstname === "undefined" || typeof req.body.lastname === "undefined" || typeof req.body.address === "undefined"){
+    res.status(BAD_REQUEST).send("Bad request Check parameters or Body");
+  } else {
+    client = new MongoClient(url, { useNewUrlParser: true, useUnifiedTopology: true });
+    client.connect().then(() => {
+      var myobj = {
+        _id : req.body.email,
+        emailId: req.body.email,
+        password: req.body.password,
+        age: req.body.age ,
+        fname: req.body.firstname,
+        lname: req.body.lastname,
+        address: req.body.address 
+      };
+      client.db('API').collection('User').insertOne(myobj,function (err,result){
+        if (err) {
+          res.status(INTERNAL_SERVER_ERROR).send(err);
+        } else if(result.insertedCount == 1){
+          res.status(OK).send("Signed up Successfully");
+        }
+        return client.close();
+      })
+    });
+  }
+});
+
+//Log User In (POST)
 app.post('/v1/user/login',function(req,res){
   if (typeof req.body.email === "undefined" || typeof req.body.password === "undefined"){
     res.status(BAD_REQUEST).send("Bad request Check request Body");
@@ -99,8 +130,31 @@ app.post('/v1/user/login',function(req,res){
   }
 });
 
-app.get('/v1/user/profile/:email',function(req,res){
-  console.log("get" + req.encode);
+//Retrive Another User's Profile Information (GET)
+app.get('/v1/user/profile/other/:email',function(req,res){
+  if(!req.params){
+    res.status(BAD_REQUEST).send("Bad request Check parameters");
+  }
+  else {
+    console.log("get " + req.params.email);
+
+    client = new MongoClient(url, { useNewUrlParser: true, useUnifiedTopology: true });
+    client.connect().then(() => {
+      client.db('API').collection('User').findOne({ _id :req.params.email},function (err,result){
+        if (err)
+          console.log(err);
+        else {
+          res.status(OK).send(result);
+        }
+        return client.close();
+      })
+    });
+  }
+});
+
+//Retrive Current User's Profile Information (GET)
+app.get('/v1/user/profile/me',function(req, res){
+  console.log("get me: " + req.encode);
   if(!req.params){
     res.status(BAD_REQUEST).send("Bad request Check parameters");
   }
@@ -119,7 +173,9 @@ app.get('/v1/user/profile/:email',function(req,res){
   }
 });
 
-app.post('/v1/user/profile/:email',function(req,res){
+//Update Profile (POST)
+app.post('/v1/user/profile/me',function(req,res){
+  console.log("post " + req.encode);
   if (typeof req.body.password === "undefined" || typeof req.body.age === "undefined" ||
   typeof req.body.firstname === "undefined" || typeof req.body.lastname === "undefined" ||
   typeof req.body.address === "undefined"){
@@ -149,28 +205,115 @@ app.post('/v1/user/profile/:email',function(req,res){
   }
 });
 
-
-app.post('/v1/user/signup', (req, res) => {
-  if(typeof req.body.email === "undefined" || typeof req.body.password === "undefined" || typeof req.body.age === "undefined" ||
-  typeof req.body.firstname === "undefined" || typeof req.body.lastname === "undefined" || typeof req.body.address === "undefined"){
+//Retrive Current User's Shopping Cart (GET)
+app.post('/v1/user/profile/cart',function(req,res){
+  console.log("post cart: " + req.encode);
+  if (typeof req.body.name === "undefined" || typeof req.body.discount === "undefined" ||
+  typeof req.body.photo === "undefined" || typeof req.body.price === "undefined" ||
+  typeof req.body.region === "undefined" || typeof req.body.quantity === "undefined"){
     res.status(BAD_REQUEST).send("Bad request Check parameters or Body");
   } else {
     client = new MongoClient(url, { useNewUrlParser: true, useUnifiedTopology: true });
+    client.connect().then(() => {    
+      //Check if item is in cart already  
+      client.db('API').collection('Cart').findOne({_id: req.encode, "items.name": req.body.name }).then(result => {
+        //If item is already in the cart
+        if (result != null) {
+          //Get item index
+          var item_index = result.items.findIndex(obj => obj.name === req.body.name);
+          //console.log(result.items[item_index].name);
+          //If removing items AND removing all or "more" of the item than currently in cart just remove the item altogether
+          if (req.body.quantity < 0 && result.items[item_index].quantity <= Math.abs(req.body.quantity)) {
+            var myquery = { _id: req.encode };
+            var newvalues = {
+              $pull: {
+                items: {
+                  "name": req.body.name
+                }
+              }
+            };
+            
+            client.db('API').collection('Cart').updateOne(myquery, newvalues, { upsert: true }, function (err,result){
+              //console.log(result)
+              if (err) {
+                res.status(INTERNAL_SERVER_ERROR).send(err);
+              } else {
+                res.status(OK).send("Record Removed");
+              }
+              return client.close();
+            })
+          } else {
+            //Else not removing items OR removing some but not all
+            var myquery = { _id: req.encode, "items.name": req.body.name };
+            var newvalues = {
+              $set: {
+                "items.$.name": req.body.name,
+                "items.$.discount": req.body.discount,
+                "items.$.photo": req.body.photo,
+                "items.$.price": req.body.price,
+                "items.$.region": req.body.region,
+              },
+              $inc: {
+                "items.$.quantity": req.body.quantity
+              }
+            };
+            
+            client.db('API').collection('Cart').updateOne(myquery, newvalues, { upsert: true }, function (err,result){
+              //console.log(result)
+              if (err) {
+                res.status(INTERNAL_SERVER_ERROR).send(err);
+              } else {
+                res.status(OK).send("Record Updated");
+              }
+              return client.close();
+            })
+          }
+        } else if (req.body.quantity > 0) {
+          //Else item is not already in cart so make sure not removing items
+          var myquery = { _id: req.encode };
+          var newvalues = {
+            $addToSet: {
+              items: {
+                name: req.body.name,
+                discount: req.body.discount,
+                photo: req.body.photo,
+                price: req.body.price,
+                region: req.body.region,
+                quantity: req.body.quantity
+              }
+            }
+          };
+          
+          client.db('API').collection('Cart').updateOne(myquery, newvalues, { upsert: true }, function (err,result){
+            if (err)
+              res.status(INTERNAL_SERVER_ERROR).send(err);
+            else {
+              res.status(OK).send("Record Added");
+            }
+            return client.close();
+          })
+        } else {
+          res.status(BAD_REQUEST).send("Bad Request: NO ITEM TO REMOVE FROM CART");
+        }
+      })
+    });
+  }
+});
+
+//Update Current User's Shopping Cart (POST)
+app.get('/v1/user/profile/cart',function(req, res){
+  console.log("get cart: " + req.encode);
+  if(!req.params){
+    res.status(BAD_REQUEST).send("Bad request Check parameters");
+  }
+  else {
+    client = new MongoClient(url, { useNewUrlParser: true, useUnifiedTopology: true });
     client.connect().then(() => {
-      var myobj = {
-        _id : req.body.email,
-        emailId: req.body.email,
-        password: req.body.password,
-        age: req.body.age ,
-        fname: req.body.firstname,
-        lname: req.body.lastname,
-        address: req.body.address 
-      };
-      client.db('API').collection('User').insertOne(myobj,function (err,result){
-        if (err) {
-          res.status(INTERNAL_SERVER_ERROR).send(err);
-        } else if(result.insertedCount == 1){
-          res.status(OK).send("Signed up Successfully");
+      client.db('API').collection('Cart').findOne({ _id :req.encode},function (err,result){
+        if (err)
+          console.log(err);
+        else {
+          res.status(OK).send(result);
         }
         return client.close();
       })
@@ -178,6 +321,7 @@ app.post('/v1/user/signup', (req, res) => {
   }
 });
 
+//Listener Setup
 app.listen(port, (req, res) => {
   console.log("listening..." + port);
 });

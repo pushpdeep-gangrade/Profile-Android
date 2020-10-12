@@ -5,6 +5,8 @@ var mysql = require('mysql');
 const port = 8088
 const jwt = require('jsonwebtoken');
 const braintree = require("braintree");
+const bcrypt = require('bcryptjs');
+var salt = bcrypt.genSaltSync(10);
 
 //swagger for documentation
 const swaggerJSDoc = require('swagger-jsdoc');
@@ -87,6 +89,7 @@ app.post('/v1/user/signup', (req, res) => {
     typeof req.body.firstname === "undefined" || typeof req.body.lastname === "undefined" || typeof req.body.address === "undefined") {
     res.status(BAD_REQUEST).send("Bad request Check parameters or Body");
   } else {
+        var hash = bcrypt.hashSync(req.body.password, salt);
     gateway.customer.create({
       firstName: req.body.firstname,
       lastName: req.body.lastname,
@@ -103,7 +106,7 @@ app.post('/v1/user/signup', (req, res) => {
         var myobj = {
           _id : result.customer.id,
           emailId: req.body.email,
-          password: req.body.password,
+          password: hash,
           age: req.body.age,
           fname: req.body.firstname,
           lname: req.body.lastname,
@@ -161,21 +164,23 @@ app.post('/v1/user/login', function(req, res) {
     client.connect().then(() => {
       var myObj = {
         emailId: req.body.email,
-        password: req.body.password
       };
       client.db('API').collection('User').findOne(myObj, function(err, result) {
-        console.log(result._id);
+        //console.log(result._id);
         if (err)
           res.status(INTERNAL_SERVER_ERROR).send(err);
-        else if (result == null)
-          res.status(OK).send("Invalid Credentials");
-        else if (result != null) {
+        else if(result == null)
+          res.status(OK).send("No such user found");
+        else if (result != null && bcrypt.compareSync(req.body.password, result.password)) {
           var token = jwt.sign({
             u_id: result._id,
           }, 'secret', {
             expiresIn: 60 * 60
           });
           res.header("AuthorizationKey", token).status(OK).send("Login Successful");
+        }
+        else {
+          res.status(OK).send("Invalid Credentials");
         }
         return client.close();
       })

@@ -62,7 +62,7 @@ public class LoginActivity extends AppCompatActivity {
         login = findViewById(R.id.login_loginButton);
         createAccount = findViewById(R.id.login_createAccountLink);
 
-        login.setOnClickListener(new View.OnClickListener() {
+        /*login.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 //new GetPlacesAsync(LoginActivity.this, db, AddTripActivity.this).execute(url);
@@ -158,6 +158,15 @@ public class LoginActivity extends AppCompatActivity {
                 };
                 queue.add(postRequest);
 
+            }
+        });*/
+
+        login.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Intent gotoMainActivity = new Intent(LoginActivity.this, MainActivity.class);
+                startActivity(gotoMainActivity);
+                finish();
             }
         });
 

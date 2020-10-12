@@ -24,6 +24,7 @@ app.use(express.json());
 const OK = 200;
 const BAD_REQUEST = 400;
 const UNAUTHORIZED = 401;
+const CONFLICT = 403;
 const NOT_FOUND = 404;
 const INTERNAL_SERVER_ERROR = 500;
 
@@ -92,13 +93,35 @@ app.post('/v1/user/signup', (req, res) => {
         lname: req.body.lastname,
         address: req.body.address 
       };
-      client.db('API').collection('User').insertOne(myobj,function (err,result){
-        if (err) {
-          res.status(INTERNAL_SERVER_ERROR).send(err);
-        } else if(result.insertedCount == 1){
-          res.status(OK).send("Signed up Successfully");
+      client.db('API').collection('User').insertOne(myobj).then(thenResult => {
+        //Populate empty cart for user on signup
+        var myobj2 = {
+          _id: req.body.email+"-cart",
+          items: []
+        };
+        
+        client.db('API').collection('Cart').insertOne(myobj2).then(thenResult2 => {
+          //Populate empty order history for user on signup
+          var myobj3 = {
+            _id: req.body.email+"-orders",
+            orders: []
+          };
+          
+          client.db('API').collection('OrderHistory').insertOne(myobj3, function (err3,result3){
+            if (err3)
+              res.status(INTERNAL_SERVER_ERROR).send(err3);
+            else if(result3.insertedCount == 1){
+              res.status(OK).send("Signed up Successfully");
+            }
+            //return client.close();
+          })
+        }).catch(err2 => res.status(INTERNAL_SERVER_ERROR).send(err2))
+      }).catch(err => {
+        if (err.code == 11000) {
+          res.status(CONFLICT).send("User with this Email Already Exists")
+        } else {
+          res.status(INTERNAL_SERVER_ERROR).send(err)
         }
-        return client.close();
       })
     });
   }
@@ -205,9 +228,30 @@ app.post('/v1/user/profile/me',function(req,res){
   }
 });
 
-//Retrive Current User's Shopping Cart (GET)
+//Retieve Current User's Shopping Cart (GET)
+app.get('/v1/user/profile/cart',function(req, res){
+  console.log("get cart: " + req.encode+"-cart");
+  if(!req.params){
+    res.status(BAD_REQUEST).send("Bad request Check parameters");
+  }
+  else {
+    client = new MongoClient(url, { useNewUrlParser: true, useUnifiedTopology: true });
+    client.connect().then(() => {
+      client.db('API').collection('Cart').findOne({ _id :req.encode+"-cart"},function (err,result){
+        if (err)
+          console.log(err);
+        else {
+          res.status(OK).send(result);
+        }
+        return client.close();
+      })
+    });
+  }
+});
+
+//Update Current User's Shopping Cart (POST)
 app.post('/v1/user/profile/cart',function(req,res){
-  console.log("post cart: " + req.encode);
+  console.log("post cart: " + req.encode+"-cart");
   if (typeof req.body.name === "undefined" || typeof req.body.discount === "undefined" ||
   typeof req.body.photo === "undefined" || typeof req.body.price === "undefined" ||
   typeof req.body.region === "undefined" || typeof req.body.quantity === "undefined"){
@@ -216,7 +260,7 @@ app.post('/v1/user/profile/cart',function(req,res){
     client = new MongoClient(url, { useNewUrlParser: true, useUnifiedTopology: true });
     client.connect().then(() => {    
       //Check if item is in cart already  
-      client.db('API').collection('Cart').findOne({_id: req.encode, "items.name": req.body.name }).then(result => {
+      client.db('API').collection('Cart').findOne({_id: req.encode+"-cart", "items.name": req.body.name }).then(result => {
         //If item is already in the cart
         if (result != null) {
           //Get item index
@@ -224,7 +268,7 @@ app.post('/v1/user/profile/cart',function(req,res){
           //console.log(result.items[item_index].name);
           //If removing items AND removing all or "more" of the item than currently in cart just remove the item altogether
           if (req.body.quantity < 0 && result.items[item_index].quantity <= Math.abs(req.body.quantity)) {
-            var myquery = { _id: req.encode };
+            var myquery = { _id: req.encode+"-cart" };
             var newvalues = {
               $pull: {
                 items: {
@@ -244,7 +288,7 @@ app.post('/v1/user/profile/cart',function(req,res){
             })
           } else {
             //Else not removing items OR removing some but not all
-            var myquery = { _id: req.encode, "items.name": req.body.name };
+            var myquery = { _id: req.encode+"-cart", "items.name": req.body.name };
             var newvalues = {
               $set: {
                 "items.$.name": req.body.name,
@@ -270,7 +314,7 @@ app.post('/v1/user/profile/cart',function(req,res){
           }
         } else if (req.body.quantity > 0) {
           //Else item is not already in cart so make sure not removing items
-          var myquery = { _id: req.encode };
+          var myquery = { _id: req.encode+"-cart" };
           var newvalues = {
             $addToSet: {
               items: {
@@ -300,25 +344,36 @@ app.post('/v1/user/profile/cart',function(req,res){
   }
 });
 
-//Update Current User's Shopping Cart (POST)
-app.get('/v1/user/profile/cart',function(req, res){
-  console.log("get cart: " + req.encode);
-  if(!req.params){
-    res.status(BAD_REQUEST).send("Bad request Check parameters");
-  }
-  else {
+//Clear all items from Current User's Shopping Cart (POST)
+app.post('/v1/user/profile/clearcart',function(req,res){
+  console.log("post cart: " + req.encode+"-cart");
     client = new MongoClient(url, { useNewUrlParser: true, useUnifiedTopology: true });
-    client.connect().then(() => {
-      client.db('API').collection('Cart').findOne({ _id :req.encode},function (err,result){
-        if (err)
-          console.log(err);
-        else {
-          res.status(OK).send(result);
+    client.connect().then(() => {    
+      //Check if cart already exists
+      client.db('API').collection('Cart').findOne({_id: req.encode+"-cart"}).then(result => {
+        //If cart already exists
+        if (result != null) {
+          var myquery = { _id: req.encode+"-cart" };
+          var newvalues = {
+            $set: {
+              items: []
+            }
+          };
+          //client.db('API').collection('Cart').remove(myquery, function (err,result){
+          //Clear all the items in the cart
+          client.db('API').collection('Cart').updateOne(myquery, newvalues, {upsert: true}, function (err,result){
+            if (err) {
+              res.status(INTERNAL_SERVER_ERROR).send(err);
+            } else {
+              res.status(OK).send("Record Removed");
+            }
+            return client.close();
+          })
+        } else {
+          res.status(BAD_REQUEST).send("Bad Request: NO CART TO CLEAR");
         }
-        return client.close();
       })
     });
-  }
 });
 
 //Listener Setup

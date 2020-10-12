@@ -376,6 +376,80 @@ app.post('/v1/user/profile/clearcart',function(req,res){
     });
 });
 
+//Retieve Current User's Order History (GET)
+app.get('/v1/user/profile/orderhistory',function(req, res){
+  console.log("get orders: " + req.encode+"-orders");
+  if(!req.params){
+    res.status(BAD_REQUEST).send("Bad request Check parameters");
+  }
+  else {
+    client = new MongoClient(url, { useNewUrlParser: true, useUnifiedTopology: true });
+    client.connect().then(() => {
+      client.db('API').collection('OrderHistory').findOne({ _id :req.encode+"-orders"},function (err,result){
+        if (err)
+          console.log(err);
+        else {
+          res.status(OK).send(result);
+        }
+        return client.close();
+      })
+    });
+  }
+});
+
+//Update Current User's Order History (POST)
+app.post('/v1/user/profile/completeorder',function(req,res){
+  console.log("post orders: " + req.encode+"-orders");
+  client = new MongoClient(url, { useNewUrlParser: true, useUnifiedTopology: true });
+  client.connect().then(() => {
+    //Check for cart  
+    client.db('API').collection('Cart').findOne({_id: req.encode+"-cart"}).then(result => {
+      //If cart has at least 1 item in it
+      if (result.items.length > 0) {
+        var myquery = { _id: req.encode+"-cart" };
+        var newvalues = {
+          $set: {
+            items: []
+          }
+        };
+        
+        //Clear the cart of all items
+        client.db('API').collection('Cart').updateOne(myquery, newvalues, { upsert: true }).then(result2 => {
+          //Then create order history entry using date and order items
+          var date_ob = new Date();
+          console.log(`${date_ob.getFullYear()}-${date_ob.getMonth()+1}-${date_ob.getDate()}`);
+          var myquery2 = { _id: req.encode+"-orders" };
+          var newvalues2 = {
+            $addToSet: {
+              orders: {
+                date: `${date_ob.getFullYear()}-${date_ob.getMonth()+1}-${date_ob.getDate()}`,
+                items: result.items
+              }
+            }
+          };
+          
+          //Place order into order history for User
+          client.db('API').collection('OrderHistory').updateOne(myquery2, newvalues2, { upsert: true }, function(err3,result3) {
+            if (err3) {
+              res.status(INTERNAL_SERVER_ERROR).send(err3);
+            } else {
+              res.status(OK).send("Order Complete");
+            }
+            return client.close();
+          })
+        }).catch(err2 => {
+          res.status(BAD_REQUEST).send("Bad Request: CART NOT EMPTIED\n"+err2);
+        })
+
+      } else {
+        res.status(BAD_REQUEST).send("Bad Request: CART EMPTY");
+      }
+    }).catch(err => {
+      res.status(BAD_REQUEST).send("Bad Request: CART NOT FOUND\n"+err);
+    })
+  });
+});
+
 //Listener Setup
 app.listen(port, (req, res) => {
   console.log("listening..." + port);

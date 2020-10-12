@@ -96,7 +96,7 @@ public class EditProfileFragment extends Fragment {
 
 
 
-        String profileUrl = MainActivity.url + "profile/" + email;
+        String profileUrl = MainActivity.url + "profile/me";
 
         RequestQueue queue = Volley.newRequestQueue(getContext());
 

@@ -45,16 +45,11 @@ public class LoginActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        SharedPreferences sharedPref = getSharedPreferences("info",Context.MODE_PRIVATE);
-       // if(sharedPref!=null){
-            String a = sharedPref.getString("email","");
-            String b = sharedPref.getString("authKey","");
-            Log.d("demo","hello"+a+"   "+b);
-          //  if(!a.equals("") && !b.equals("")){
-                verifyToken(a,b);
-        //    }
-
-     //   }
+        SharedPreferences sharedPref = getSharedPreferences("info", Context.MODE_PRIVATE);
+        String a = sharedPref.getString("email", "");
+        String b = sharedPref.getString("authKey", "");
+        Log.d("demo", "hello" + a + "   " + b);
+        verifyToken(a, b);
         setContentView(R.layout.activity_login);
 
         email = findViewById(R.id.login_email);
@@ -65,6 +60,7 @@ public class LoginActivity extends AppCompatActivity {
         login.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
+                Log.d("demo", "login");
                 //new GetPlacesAsync(LoginActivity.this, db, AddTripActivity.this).execute(url);
                 String loginUrl = url + "login";
 
@@ -102,10 +98,10 @@ public class LoginActivity extends AppCompatActivity {
                                         e.printStackTrace();
                                     }
 
-                                  //  Toast.makeText(LoginActivity.this, "Login Successful", Toast.LENGTH_LONG).show();
+                                    //  Toast.makeText(LoginActivity.this, "Login Successful", Toast.LENGTH_LONG).show();
                                     Intent gotoMainActivity = new Intent(LoginActivity.this, MainActivity.class);
                                     Bundle authBundle = new Bundle();
-                                 //   Log.d("AuthKey", authkey);
+                                    //   Log.d("AuthKey", authkey);
                                     Log.d("auth", authkey);
                                     authBundle.putString(AUTH_KEY, authkey); //Your id
 
@@ -179,13 +175,10 @@ public class LoginActivity extends AppCompatActivity {
                 startActivity(gotoSignUp);
             }
         });
-
     }
 
-    public void verifyToken(String email, final String token){
-        GetProfile obj = new GetProfile(getApplicationContext(),token);
-        obj.execute(url + "profile/" + email);
-        }
-
-
+    public void verifyToken(String email, final String token) {
+        GetProfile obj = new GetProfile(getApplicationContext(), token);
+        obj.execute(url + "profile/me");
+    }
 }

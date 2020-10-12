@@ -1,5 +1,6 @@
 package com.example.profileapp.profile;
 
+import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
 
@@ -21,10 +22,19 @@ import com.android.volley.Response;
 import com.android.volley.VolleyError;
 import com.android.volley.toolbox.StringRequest;
 import com.android.volley.toolbox.Volley;
+import com.braintreepayments.api.PaymentMethod;
+import com.braintreepayments.api.dropin.DropInActivity;
+import com.braintreepayments.api.dropin.DropInRequest;
+import com.braintreepayments.api.dropin.DropInResult;
+import com.braintreepayments.api.models.PaymentMethodNonce;
 import com.example.profileapp.MainActivity;
 import com.example.profileapp.R;
 import com.example.profileapp.models.User;
 import com.google.gson.Gson;
+import com.loopj.android.http.AsyncHttpClient;
+import com.loopj.android.http.AsyncHttpResponseHandler;
+import com.loopj.android.http.RequestParams;
+import com.loopj.android.http.TextHttpResponseHandler;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -33,6 +43,10 @@ import org.json.JSONObject;
 import java.util.HashMap;
 import java.util.Map;
 
+import cz.msebera.android.httpclient.Header;
+
+import static android.app.Activity.RESULT_CANCELED;
+import static android.app.Activity.RESULT_OK;
 import static android.content.Context.MODE_PRIVATE;
 
 public class ViewProfileFragment extends Fragment {
@@ -79,25 +93,6 @@ public class ViewProfileFragment extends Fragment {
                 navController.navigate(R.id.action_nav_view_profile_to_nav_edit_profile, bundle);
             }
         });
-
-       // view.findViewById(R.id.logout)
-
-        //SharedPreferences prefs = this.getActivity().getSharedPreferences("info", MODE_PRIVATE);
-
-        //Gson gson = new Gson();
-        //User user = gson.fromJson(prefs.getString("user", null), User.class);
-
-        //TextView first = view.findViewById(R.id.viewProfile_firstNameText);
-        //TextView last = view.findViewById(R.id.viewProfile_lastNameText);
-        //TextView email = view.findViewById(R.id.viewProfile_emailText);
-        //TextView address = view.findViewById(R.id.viewProfile_addressText);
-        //TextView age = view.findViewById(R.id.viewProfile_ageText);
-
-        //first.setText(user.firstName);
-        //last.setText(user.lastName);
-        //email.setText(user.email);
-        //address.setText(user.address);
-        //age.setText(String.valueOf(user.age));
 
 
         SharedPreferences prefs = this.getActivity().getSharedPreferences("info", MODE_PRIVATE);

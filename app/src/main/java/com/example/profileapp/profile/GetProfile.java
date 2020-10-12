@@ -59,8 +59,6 @@ public class GetProfile extends AsyncTask<String, Void, Integer> {
             Intent gotoMainActivity = new Intent(context.getApplicationContext(), MainActivity.class);
             gotoMainActivity.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK | Intent.FLAG_ACTIVITY_NEW_TASK);
             context.startActivity(gotoMainActivity);
-
-           // Log.d("demo","suc");
         }
         else {
             SharedPreferences settings = context.getSharedPreferences("info", Context.MODE_PRIVATE);

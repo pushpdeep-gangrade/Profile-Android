@@ -34,14 +34,9 @@ public class OrderCompleteFragment extends Fragment {
     private String mAuthorizationkey;
     private static final String AUTH_KEY = "authorizationkey";
 
-    public OrderCompleteFragment() {
-        // Required empty public constructor
-    }
-
 
     public static OrderCompleteFragment newInstance(String param1, String param2) {
         OrderCompleteFragment fragment = new OrderCompleteFragment();
-
         return fragment;
     }
 
@@ -60,7 +55,6 @@ public class OrderCompleteFragment extends Fragment {
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
         view = inflater.inflate(R.layout.fragment_order_complete, container, false);
-
         orderNumber = view.findViewById(R.id.orderComplete_orderNumber);
         orderCompleteText = view.findViewById(R.id.orderComplete_orderCompleteText);
         orderNumberText = view.findViewById(R.id.orderComplete_orderNumberText);
@@ -82,8 +76,6 @@ public class OrderCompleteFragment extends Fragment {
             Date dt = new Date(System.currentTimeMillis());
 
             order.orderDate = dt;
-
-
             orderNumber.setText(order.orderId);
             orderDate.setText(String.valueOf(order.orderDate));
 

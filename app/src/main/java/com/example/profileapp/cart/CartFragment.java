@@ -28,6 +28,8 @@ public class CartFragment extends Fragment {
     RecyclerView cartItemRecyclerView;
     View view;
     private NavController navController;
+    private String mAuthorizationkey;
+    private static final String AUTH_KEY = "authorizationkey";
 
 
     public CartFragment() {
@@ -46,6 +48,11 @@ public class CartFragment extends Fragment {
         if (getArguments() != null) {
             storeItemArrayList = (ArrayList<StoreItem>) getArguments().getSerializable("cartList");
             Log.d("Store Items cart", storeItemArrayList.toString());
+
+            mAuthorizationkey = getArguments().getString(AUTH_KEY);
+            if(mAuthorizationkey != null){
+                Log.d("cart auth", mAuthorizationkey);
+            }
         }
     }
 

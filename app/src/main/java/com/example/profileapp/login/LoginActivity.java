@@ -40,7 +40,7 @@ public class LoginActivity extends AppCompatActivity {
     Button login;
     EditText email, password;
     Button createAccount;
-    final String url = "http://104.248.113.55:8080/v1/user/";
+    final String url = "http://104.248.113.55:8088/v1/user/";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -62,7 +62,7 @@ public class LoginActivity extends AppCompatActivity {
         login = findViewById(R.id.login_loginButton);
         createAccount = findViewById(R.id.login_createAccountLink);
 
-        /*login.setOnClickListener(new View.OnClickListener() {
+        login.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 //new GetPlacesAsync(LoginActivity.this, db, AddTripActivity.this).execute(url);
@@ -106,7 +106,9 @@ public class LoginActivity extends AppCompatActivity {
                                     Intent gotoMainActivity = new Intent(LoginActivity.this, MainActivity.class);
                                     Bundle authBundle = new Bundle();
                                  //   Log.d("AuthKey", authkey);
+                                    Log.d("auth", authkey);
                                     authBundle.putString(AUTH_KEY, authkey); //Your id
+
                                     gotoMainActivity.putExtras(authBundle); //Put your id to your next Intent
                                     startActivity(gotoMainActivity);
                                     finish();
@@ -159,16 +161,16 @@ public class LoginActivity extends AppCompatActivity {
                 queue.add(postRequest);
 
             }
-        });*/
+        });
 
-        login.setOnClickListener(new View.OnClickListener() {
+        /*login.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 Intent gotoMainActivity = new Intent(LoginActivity.this, MainActivity.class);
                 startActivity(gotoMainActivity);
                 finish();
             }
-        });
+        });*/
 
         createAccount.setOnClickListener(new View.OnClickListener() {
             @Override

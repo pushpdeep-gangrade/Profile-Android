@@ -8,6 +8,7 @@ import androidx.navigation.fragment.NavHostFragment;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -25,6 +26,8 @@ public class OrderHistoryFragment extends Fragment {
     RecyclerView orderRecyclerView;
     private NavController navController;
     List<Order> orderList = MainActivity.orderList;
+    private String mAuthorizationkey;
+    private static final String AUTH_KEY = "authorizationkey";
 
     public OrderHistoryFragment() {
         // Required empty public constructor
@@ -40,7 +43,10 @@ public class OrderHistoryFragment extends Fragment {
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-
+        if (getArguments() != null) {
+            mAuthorizationkey = getArguments().getString(AUTH_KEY);
+            Log.d("history auth", mAuthorizationkey);
+        }
     }
 
     @Override
@@ -65,7 +71,7 @@ public class OrderHistoryFragment extends Fragment {
         orderRecyclerView.setLayoutManager(layoutManager);
 
         final OrderAdapter ad = new OrderAdapter(getContext(),
-                android.R.layout.simple_list_item_1, orderList, navController);
+                android.R.layout.simple_list_item_1, orderList, navController, mAuthorizationkey);
 
         orderRecyclerView.setAdapter(ad);
 

@@ -29,13 +29,15 @@ public class OrderAdapter extends RecyclerView.Adapter<StoreItemViewHolder> {
     List<Order> orderItemList = new ArrayList<>();
     Context context;
     NavController navController;
+    String authToken;
 
     public OrderAdapter(@NonNull Context context, int resource, @NonNull List<Order> orderItemList,
-        NavController navController) {
+        NavController navController, String authToken) {
 
         this.orderItemList = orderItemList;
         this.context = context;
         this.navController = navController;
+        this.authToken = authToken;
 
 
     }
@@ -68,6 +70,7 @@ public class OrderAdapter extends RecyclerView.Adapter<StoreItemViewHolder> {
                 public void onClick(View view) {
                     Bundle bundle = new Bundle();
                     bundle.putSerializable("order", (Serializable) order);
+                    bundle.putString("authorizationkey", authToken);
                     navController.navigate(R.id.action_nav_order_history_to_nav_previous_order, bundle);
                 }
             });

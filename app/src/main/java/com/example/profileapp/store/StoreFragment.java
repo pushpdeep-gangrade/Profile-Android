@@ -47,6 +47,8 @@ public class StoreFragment extends Fragment {
     RecyclerView storeItemRecyclerView;
     View view;
     private NavController navController;
+    private String mAuthorizationkey;
+    private static final String AUTH_KEY = "authorizationkey";
 
     public StoreFragment() {
         // Required empty public constructor
@@ -62,7 +64,10 @@ public class StoreFragment extends Fragment {
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-
+        if (getArguments() != null) {
+            mAuthorizationkey = getArguments().getString(AUTH_KEY);
+            Log.d("store auth", mAuthorizationkey);
+        }
     }
 
     @Override

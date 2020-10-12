@@ -57,7 +57,8 @@ public class ViewProfileFragment extends Fragment {
 
         if (getArguments() != null) {
             mAuthorizationkey = getArguments().getString(AUTH_KEY);
-      //      Log.d("ViewProfileFragment", mAuthorizationkey);
+            Log.d("pauth", mAuthorizationkey);
+            //      Log.d("ViewProfileFragment", mAuthorizationkey);
         }
     }
 

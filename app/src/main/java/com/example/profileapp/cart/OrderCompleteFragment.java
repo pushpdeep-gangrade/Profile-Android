@@ -6,6 +6,7 @@ import androidx.fragment.app.Fragment;
 import androidx.navigation.NavController;
 import androidx.navigation.fragment.NavHostFragment;
 
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -30,6 +31,8 @@ public class OrderCompleteFragment extends Fragment {
     Button returnButton;
     private NavController navController;
     Order order = new Order();
+    private String mAuthorizationkey;
+    private static final String AUTH_KEY = "authorizationkey";
 
     public OrderCompleteFragment() {
         // Required empty public constructor
@@ -45,6 +48,10 @@ public class OrderCompleteFragment extends Fragment {
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        if (getArguments() != null) {
+            mAuthorizationkey = getArguments().getString(AUTH_KEY);
+            Log.d("complete auth", mAuthorizationkey);
+        }
 
     }
 

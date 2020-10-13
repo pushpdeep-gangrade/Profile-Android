@@ -38,6 +38,8 @@ import org.jetbrains.annotations.NotNull;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.Serializable;
+import java.text.DecimalFormat;
+import java.text.NumberFormat;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -50,15 +52,20 @@ public class CartItemAdapter extends RecyclerView.Adapter<StoreItemViewHolder> {
     RecyclerView rv;
     String mAuthorizationkey;
     String postCartUrl = MainActivity.url + "cart";
+    double currentTotal = 0;
+    TextView currentTotalText;
+    String formatted;
+
 
     public CartItemAdapter(@NonNull Context context, int resource, @NonNull List<StoreItem> storeItems,
-                            NavController navController, RecyclerView rv, String mAuthorizationkey) {
+                            NavController navController, RecyclerView rv, String mAuthorizationkey, TextView currentTotalText) {
 
         this.storeItemList = storeItems;
         this.context = context;
         this.navController = navController;
         this.rv = rv;
         this.mAuthorizationkey = mAuthorizationkey;
+        this.currentTotalText = currentTotalText;
 
         Log.d("In Constructor", "In Constructor");
 
@@ -98,11 +105,13 @@ public class CartItemAdapter extends RecyclerView.Adapter<StoreItemViewHolder> {
                 int newQuantity = storeItem.quantity - (storeItem.quantity * 2);
                 storeItem.quantity = newQuantity;
                 storeItemList.remove(storeItem);
+                getCurrentTotal();
                 removeItemFromCart(storeItem);
                 Log.d("cart List", storeItemList.toString());
 
                 final CartItemAdapter ad = new CartItemAdapter(context,
-                        android.R.layout.simple_list_item_1, storeItemList, navController, rv, mAuthorizationkey);
+                        android.R.layout.simple_list_item_1, storeItemList, navController, rv,
+                        mAuthorizationkey, currentTotalText);
 
                 rv.setAdapter(ad);
 
@@ -204,6 +213,23 @@ public class CartItemAdapter extends RecyclerView.Adapter<StoreItemViewHolder> {
         };
 
         queue.add(getRequest);
+    }
+
+    public void getCurrentTotal(){
+        currentTotal = 0;
+
+        for(int i = 0; i < storeItemList.size(); i++){
+            double price = storeItemList.get(i).price;
+            double discount = storeItemList.get(i).discount;
+
+            double priceAfterDiscount = (price - (price*discount))*storeItemList.get(i).quantity;
+
+            currentTotal+=priceAfterDiscount;
+        }
+
+        NumberFormat formatter = new DecimalFormat("#0.00");
+        formatted = formatter.format(currentTotal);
+        currentTotalText.setText("Current Total: " + formatted);
     }
 
 }

@@ -22,22 +22,38 @@ import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.EditText;
 import android.widget.TextView;
+import android.widget.Toast;
 import android.widget.Toolbar;
 
+import com.android.volley.NetworkResponse;
+import com.android.volley.Request;
+import com.android.volley.RequestQueue;
+import com.android.volley.Response;
+import com.android.volley.VolleyError;
+import com.android.volley.toolbox.StringRequest;
+import com.android.volley.toolbox.Volley;
 import com.example.profileapp.cart.CartFragment;
 import com.example.profileapp.login.LoginActivity;
 import com.example.profileapp.models.Order;
 import com.example.profileapp.models.StoreItem;
+import com.example.profileapp.models.User;
 import com.example.profileapp.profile.EditProfileFragment;
 import com.example.profileapp.profile.ViewProfileFragment;
 import com.example.profileapp.store.StoreFragment;
 import com.google.android.material.appbar.MaterialToolbar;
 import com.google.android.material.navigation.NavigationView;
+import com.google.gson.Gson;
+
+import org.json.JSONException;
+import org.json.JSONObject;
 
 import java.io.Serializable;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 public class MainActivity extends AppCompatActivity implements NavigationView.OnNavigationItemSelectedListener{
 
@@ -49,6 +65,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
     public static List<StoreItem> cartList = new ArrayList<>();
     public static List<Order> orderList = new ArrayList<>();
     private TextView userFullname, userEmail;
+    private User user = new User();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -59,6 +76,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         if(sharedPref!=null){
             mAuthorizationkey = sharedPref.getString("authKey","");
             Log.d("mauth", mAuthorizationkey);
+            getUser();
         }
 //        if (getIntent().getStringExtra(AUTH_KEY) != null) {
 //            mAuthorizationkey = getIntent().getStringExtra(AUTH_KEY);
@@ -129,6 +147,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
             Bundle authBundle = new Bundle();
             authBundle.putString(AUTH_KEY, mAuthorizationkey);
             authBundle.putSerializable("cartList", (Serializable) cartList);
+            Log.d("User", user.toString());
             navController.navigate(R.id.nav_cart, authBundle);
 
             return true;
@@ -211,5 +230,71 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         }
 
         return true;
+    }
+
+    public void getUser(){
+        String profileUrl = MainActivity.url + "profile/me";
+
+        RequestQueue queue = Volley.newRequestQueue(this);
+
+        final StringRequest getRequest = new StringRequest(Request.Method.GET, profileUrl,
+                new Response.Listener<String>()
+                {
+                    @Override
+                    public void onResponse(String response) {
+                        // response
+                        Log.d("Response", response);
+                        if(response.equals("UNAUTHORIZED")){
+                            Toast.makeText(MainActivity.this, response, Toast.LENGTH_LONG).show();
+                        }
+                        else{
+                            Gson gsonObject = new Gson();
+
+                            try {
+                                JSONObject userObject = new JSONObject(response);
+
+                                user.firstName = userObject.getString("fname");
+                                user.lastName = userObject.getString("lname");
+                                user.email = userObject.getString("emailId");
+                                user.address = userObject.getString("address");
+                                user.age = userObject.getInt("age");
+
+                                userEmail.setText(user.email);
+                                userFullname.setText(String.format("%s %s", user.firstName, user.lastName));
+
+                                Log.d("User", userObject.toString());
+                            } catch (JSONException e) {
+                                e.printStackTrace();
+                            }
+
+                            //   Toast.makeText(getContext(), "Loaded User Profile", Toast.LENGTH_LONG).show();
+                        }
+
+                    }
+                },
+                new Response.ErrorListener()
+                {
+                    @Override
+                    public void onErrorResponse(VolleyError error) {
+                        // error
+                        NetworkResponse response = error.networkResponse;
+                        String errorMsg = "";
+                        if(response != null && response.data != null){
+                            String errorString = new String(response.data);
+                            Log.i("log error", errorString);
+                        }
+                    }
+                }
+        ) {
+            @Override
+            public Map<String, String> getHeaders() {
+                Map<String, String>  params = new HashMap<>();
+                params.put("authorizationkey", mAuthorizationkey);
+
+                return params;
+            }
+        };
+
+        queue.add(getRequest);
     }
 }

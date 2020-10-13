@@ -35,6 +35,7 @@ import com.cardinalcommerce.shared.userinterfaces.ProgressDialog;
 import com.example.profileapp.MainActivity;
 import com.example.profileapp.R;
 import com.example.profileapp.models.StoreItem;
+import com.example.profileapp.models.User;
 import com.example.profileapp.store.StoreItemAdapter;
 import com.google.gson.Gson;
 import com.loopj.android.http.AsyncHttpClient;
@@ -46,6 +47,8 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.text.DecimalFormat;
+import java.text.NumberFormat;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -64,12 +67,15 @@ public class CartFragment extends Fragment {
     View view;
     Button pay;
     Button checkout;
-    TextView textviewPayment;
+    TextView textviewPayment, currentTotalText;
     private NavController navController;
     private String mAuthorizationkey;
     ProgressBar mProgressBar;
     private static final String AUTH_KEY = "authorizationkey";
     String getCartUrl = MainActivity.url + "cart";
+    User user = new User();
+    double currentTotal = 0;
+    String formatted;
 
 
     public static CartFragment newInstance(String param1, String param2) {
@@ -101,14 +107,17 @@ public class CartFragment extends Fragment {
         pay = view.findViewById(R.id.button_pay);
         checkout = view.findViewById(R.id.button_checkout);
         textviewPayment = view.findViewById(R.id.textview_payment);
+        currentTotalText = view.findViewById(R.id.cart_currentTotal);
 
         textviewPayment.setVisibility(View.INVISIBLE);
         pay.setVisibility(View.INVISIBLE);
 
+
+
         NavHostFragment navHostFragment = (NavHostFragment) getActivity().getSupportFragmentManager().findFragmentById(R.id.nav_host_fragment);
         navController = navHostFragment.getNavController();
 
-
+        getUser();
         loadCart();
 
         return view;
@@ -132,7 +141,8 @@ public class CartFragment extends Fragment {
         cartItemRecyclerView.setLayoutManager(layoutManager);
 
         final CartItemAdapter ad = new CartItemAdapter(getContext(),
-                android.R.layout.simple_list_item_1, cartList, navController, cartItemRecyclerView, mAuthorizationkey);
+                android.R.layout.simple_list_item_1, cartList, navController, cartItemRecyclerView,
+                mAuthorizationkey, currentTotalText);
 
         cartItemRecyclerView.setAdapter(ad);
     }
@@ -174,6 +184,10 @@ public class CartFragment extends Fragment {
                                     cartList.add(nItem);
 
                                 }
+
+                                getCurrentTotal();
+                                Log.d("Total", formatted);
+
                                 setCartRecyclerView();
 
 
@@ -273,6 +287,15 @@ public class CartFragment extends Fragment {
         params.put("payment_method_nonce", nonce);
 
         client.addHeader("authorizationkey", mAuthorizationkey);
+
+        params.put("email", user.email);
+        params.put("firstname", user.firstName);
+        params.put("lastname", user.lastName);
+
+        getCurrentTotal();
+        Log.d("Total", formatted);
+        params.put("amount", formatted);
+
         client.post("http://104.248.113.55:8088/v1/payment/checkout", params,
                 new AsyncHttpResponseHandler() {
                     @Override
@@ -295,5 +318,85 @@ public class CartFragment extends Fragment {
                     // Your implementation here
                 }
         );
+    }
+
+    public void getCurrentTotal(){
+        currentTotal = 0;
+
+        for(int i = 0; i < cartList.size(); i++){
+            double price = cartList.get(i).price;
+            double discount = cartList.get(i).discount;
+
+            double priceAfterDiscount = (price - (price*discount))*cartList.get(i).quantity;
+
+            currentTotal+=priceAfterDiscount;
+        }
+
+        NumberFormat formatter = new DecimalFormat("#0.00");
+        formatted = formatter.format(currentTotal);
+        currentTotalText.setText("Current Total: " + formatted);
+    }
+
+    public void getUser(){
+        String profileUrl = MainActivity.url + "profile/me";
+
+        RequestQueue queue = Volley.newRequestQueue(getContext());
+
+        StringRequest getRequest = new StringRequest(Request.Method.GET, profileUrl,
+                new Response.Listener<String>()
+                {
+                    @Override
+                    public void onResponse(String response) {
+                        // response
+                        Log.d("Response", response);
+                        if(response.equals("UNAUTHORIZED")){
+                            Toast.makeText(getContext(), response, Toast.LENGTH_LONG).show();
+                        }
+                        else{
+                            Gson gsonObject = new Gson();
+
+                            try {
+                                JSONObject userObject = new JSONObject(response);
+
+                                user.firstName = userObject.getString("fname");
+                                user.lastName = userObject.getString("lname");
+                                user.email = userObject.getString("emailId");
+                                user.address = userObject.getString("address");
+                                user.age = userObject.getInt("age");
+
+                                Log.d("User", userObject.toString());
+                            } catch (JSONException e) {
+                                e.printStackTrace();
+                            }
+
+                            //   Toast.makeText(getContext(), "Loaded User Profile", Toast.LENGTH_LONG).show();
+                        }
+
+                    }
+                },
+                new Response.ErrorListener()
+                {
+                    @Override
+                    public void onErrorResponse(VolleyError error) {
+                        // error
+                        NetworkResponse response = error.networkResponse;
+                        String errorMsg = "";
+                        if(response != null && response.data != null){
+                            String errorString = new String(response.data);
+                            Log.i("log error", errorString);
+                        }
+                    }
+                }
+        ) {
+            @Override
+            public Map<String, String> getHeaders() {
+                Map<String, String>  params = new HashMap<>();
+                params.put("authorizationkey", mAuthorizationkey);
+
+                return params;
+            }
+        };
+
+        queue.add(getRequest);
     }
 }

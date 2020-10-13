@@ -112,8 +112,7 @@ public class EditProfileFragment extends Fragment {
                         }
                         else{
                             try {
-                                JSONArray arr = new JSONArray(response);
-                                JSONObject userObject = new JSONObject(String.valueOf(arr.get(0)));
+                                JSONObject userObject = new JSONObject(response);
 
                                 user.firstName = userObject.getString("fname");
                                 user.lastName = userObject.getString("lname");
@@ -126,7 +125,7 @@ public class EditProfileFragment extends Fragment {
                                 address.setText(user.address);
                                 age.setText(String.valueOf(user.age));
 
-                                Log.d("User", arr.get(0).toString());
+                                Log.d("User", response);
                             } catch (JSONException e) {
                                 e.printStackTrace();
                             }

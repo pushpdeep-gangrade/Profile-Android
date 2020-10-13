@@ -100,7 +100,7 @@ public class ViewProfileFragment extends Fragment {
         Gson gson = new Gson();
         User currentUser = gson.fromJson(prefs.getString("user", null), User.class);
 
-        String profileUrl = MainActivity.url + "profile/" + email;
+        String profileUrl = MainActivity.url + "profile/me";
 
         RequestQueue queue = Volley.newRequestQueue(getContext());
 
@@ -118,8 +118,7 @@ public class ViewProfileFragment extends Fragment {
                             Gson gsonObject = new Gson();
 
                             try {
-                                JSONArray arr = new JSONArray(response);
-                                JSONObject userObject = new JSONObject(String.valueOf(arr.get(0)));
+                                JSONObject userObject = new JSONObject(response);
 
                                 user.firstName = userObject.getString("fname");
                                 user.lastName = userObject.getString("lname");
@@ -146,7 +145,7 @@ public class ViewProfileFragment extends Fragment {
                                 address.setText(user.address);
                                 age.setText(String.valueOf(user.age));
 
-                                Log.d("User", arr.get(0).toString());
+                                Log.d("User", userObject.toString());
                             } catch (JSONException e) {
                                 e.printStackTrace();
                             }

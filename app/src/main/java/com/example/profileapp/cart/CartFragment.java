@@ -16,10 +16,18 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
+import android.widget.EditText;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.android.volley.NetworkResponse;
+import com.android.volley.Request;
+import com.android.volley.RequestQueue;
+import com.android.volley.Response;
+import com.android.volley.VolleyError;
+import com.android.volley.toolbox.StringRequest;
+import com.android.volley.toolbox.Volley;
 import com.braintreepayments.api.dropin.DropInActivity;
 import com.braintreepayments.api.dropin.DropInRequest;
 import com.braintreepayments.api.dropin.DropInResult;
@@ -28,13 +36,20 @@ import com.example.profileapp.MainActivity;
 import com.example.profileapp.R;
 import com.example.profileapp.models.StoreItem;
 import com.example.profileapp.store.StoreItemAdapter;
+import com.google.gson.Gson;
 import com.loopj.android.http.AsyncHttpClient;
 import com.loopj.android.http.AsyncHttpResponseHandler;
 import com.loopj.android.http.RequestParams;
 import com.loopj.android.http.TextHttpResponseHandler;
 
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
+
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import cz.msebera.android.httpclient.Header;
 
@@ -44,7 +59,7 @@ import static android.app.Activity.RESULT_OK;
 
 public class CartFragment extends Fragment {
     private ArrayList<StoreItem> storeItemArrayList = new ArrayList<>();
-    List<StoreItem> cartList = MainActivity.cartList;
+    List<StoreItem> cartList = new ArrayList<>();
     RecyclerView cartItemRecyclerView;
     View view;
     Button pay;
@@ -54,6 +69,7 @@ public class CartFragment extends Fragment {
     private String mAuthorizationkey;
     ProgressBar mProgressBar;
     private static final String AUTH_KEY = "authorizationkey";
+    String getCartUrl = MainActivity.url + "cart";
 
 
     public static CartFragment newInstance(String param1, String param2) {
@@ -92,7 +108,8 @@ public class CartFragment extends Fragment {
         NavHostFragment navHostFragment = (NavHostFragment) getActivity().getSupportFragmentManager().findFragmentById(R.id.nav_host_fragment);
         navController = navHostFragment.getNavController();
 
-        setCartRecyclerView();
+
+        loadCart();
 
         return view;
     }
@@ -115,14 +132,91 @@ public class CartFragment extends Fragment {
         cartItemRecyclerView.setLayoutManager(layoutManager);
 
         final CartItemAdapter ad = new CartItemAdapter(getContext(),
-                android.R.layout.simple_list_item_1, cartList, navController, cartItemRecyclerView);
+                android.R.layout.simple_list_item_1, cartList, navController, cartItemRecyclerView, mAuthorizationkey);
 
         cartItemRecyclerView.setAdapter(ad);
     }
 
+    public void loadCart(){
+        cartList.clear();
+
+        RequestQueue queue = Volley.newRequestQueue(getContext());
+
+        StringRequest getRequest = new StringRequest(Request.Method.GET, getCartUrl,
+                new Response.Listener<String>()
+                {
+                    @Override
+                    public void onResponse(String response) {
+                        // response
+                        Log.d("Response", response);
+                        if(response.equals("UNAUTHORIZED")){
+                            Toast.makeText(getContext(), response, Toast.LENGTH_LONG).show();
+                        }
+                        else{
+                            Gson gsonObject = new Gson();
+
+                            try {
+                                JSONObject root = new JSONObject(response);
+                                JSONArray itemsArray = root.getJSONArray("items");
+
+                                for(int i = 0; i < itemsArray.length(); i++){
+                                    JSONObject itemObj = itemsArray.getJSONObject(i);
+
+                                    StoreItem nItem = new StoreItem();
+
+                                    nItem.name = itemObj.getString("name");
+                                    nItem.quantity = itemObj.getInt("quantity");
+                                    nItem.photo = itemObj.getString("photo");
+                                    nItem.region = itemObj.getString("region");
+                                    nItem.discount = itemObj.getDouble("discount");
+                                    nItem.price = itemObj.getDouble("price");
+
+                                    cartList.add(nItem);
+
+                                }
+                                setCartRecyclerView();
+
+
+                                Log.d("Cart", response);
+                            } catch (JSONException e) {
+                                e.printStackTrace();
+                            }
+
+                            //   Toast.makeText(getContext(), "Loaded User Profile", Toast.LENGTH_LONG).show();
+                        }
+
+                    }
+                },
+                new Response.ErrorListener()
+                {
+                    @Override
+                    public void onErrorResponse(VolleyError error) {
+                        // error
+                        NetworkResponse response = error.networkResponse;
+                        String errorMsg = "";
+                        if(response != null && response.data != null){
+                            String errorString = new String(response.data);
+                            Log.i("log error", errorString);
+                        }
+                    }
+                }
+        ) {
+            @Override
+            public Map<String, String> getHeaders() {
+                Map<String, String>  params = new HashMap<>();
+                params.put("authorizationkey", mAuthorizationkey);
+
+                return params;
+            }
+        };
+
+        queue.add(getRequest);
+    }
+
     public void getclientToken(){
         final AsyncHttpClient client = new AsyncHttpClient();
-        client.get( "http://104.248.113.55:8080/v1/payment/client_token/", new TextHttpResponseHandler() {
+        client.addHeader("authorizationkey", mAuthorizationkey);
+        client.get( "http://104.248.113.55:8088/v1/payment/client_token/", new TextHttpResponseHandler() {
             private String clientToken;
 
             @Override
@@ -177,13 +271,19 @@ public class CartFragment extends Fragment {
         AsyncHttpClient client = new AsyncHttpClient();
         RequestParams params = new RequestParams();
         params.put("payment_method_nonce", nonce);
-        client.post("http://104.248.113.55:8080/v1/payment/checkout", params,
+
+        client.addHeader("authorizationkey", mAuthorizationkey);
+        client.post("http://104.248.113.55:8088/v1/payment/checkout", params,
                 new AsyncHttpResponseHandler() {
                     @Override
                     public void onSuccess(int statusCode, Header[] headers, byte[] responseBody) {
                         mProgressBar.setVisibility(View.GONE);
-                        Toast.makeText(getContext(), "Payment succesful", Toast.LENGTH_SHORT).show();
+                        Toast.makeText(getContext(), "Payment successful", Toast.LENGTH_SHORT).show();
                         Log.d("demo","sent");
+
+                        Bundle authBundle = new Bundle();
+                        authBundle.putString(AUTH_KEY, mAuthorizationkey);
+                        navController.navigate(R.id.nav_order_complete, authBundle);
                     }
 
                     @Override

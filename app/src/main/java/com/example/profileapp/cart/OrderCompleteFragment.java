@@ -14,14 +14,29 @@ import android.widget.Button;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.android.volley.NetworkResponse;
+import com.android.volley.Request;
+import com.android.volley.RequestQueue;
+import com.android.volley.Response;
+import com.android.volley.VolleyError;
+import com.android.volley.toolbox.StringRequest;
+import com.android.volley.toolbox.Volley;
 import com.example.profileapp.MainActivity;
 import com.example.profileapp.R;
 import com.example.profileapp.models.Order;
 import com.example.profileapp.models.StoreItem;
 import com.google.android.material.button.MaterialButton;
+import com.google.gson.Gson;
+
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
 
 import java.util.ArrayList;
 import java.util.Date;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 import java.util.UUID;
 
 
@@ -33,6 +48,9 @@ public class OrderCompleteFragment extends Fragment {
     Order order = new Order();
     private String mAuthorizationkey;
     private static final String AUTH_KEY = "authorizationkey";
+    List<StoreItem> cartList = new ArrayList<>();
+    String getCartUrl = MainActivity.url + "cart";
+    String orderCompleteUrl = MainActivity.url + "order/complete";
 
 
     public static OrderCompleteFragment newInstance(String param1, String param2) {
@@ -62,8 +80,26 @@ public class OrderCompleteFragment extends Fragment {
         orderDate = view.findViewById(R.id.orderComplete_orderDate);
         returnButton = view.findViewById(R.id.orderComplete_returnButton);
 
-        if(MainActivity.cartList.size() > 0){
-            UUID orderUUID = UUID.randomUUID();
+        loadCart();
+
+        NavHostFragment navHostFragment = (NavHostFragment) getActivity().getSupportFragmentManager().findFragmentById(R.id.nav_host_fragment);
+        navController = navHostFragment.getNavController();
+
+        returnButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Bundle authBundle = new Bundle();
+                authBundle.putString(AUTH_KEY, mAuthorizationkey);
+                navController.navigate(R.id.action_nav_order_complete_to_nav_store, authBundle);
+            }
+        });
+
+        return view;
+    }
+
+    public void completeOrder(){
+        if(cartList.size() > 0){
+            /*UUID orderUUID = UUID.randomUUID();
 
             order.orderId = String.valueOf(orderUUID);
 
@@ -80,7 +116,18 @@ public class OrderCompleteFragment extends Fragment {
             orderDate.setText(String.valueOf(order.orderDate));
 
             MainActivity.orderList.add(order);
-            MainActivity.cartList.clear();
+            MainActivity.cartList.clear();*/
+
+            Date dt = new Date(System.currentTimeMillis());
+
+            orderNumberText.setVisibility(View.GONE);
+            orderNumber.setVisibility(View.GONE);
+
+            order.orderDate = String.valueOf(dt);
+            orderNumber.setText(order.orderId);
+            orderDate.setText(String.valueOf(order.orderDate));
+
+            addToOrderHistory();
 
         }
         else{
@@ -91,18 +138,135 @@ public class OrderCompleteFragment extends Fragment {
             orderNumberText.setVisibility(View.GONE);
             Toast.makeText(getContext(), "Checkout Failed", Toast.LENGTH_SHORT).show();
         }
+    }
 
+    public void addToOrderHistory(){
+        RequestQueue queue = Volley.newRequestQueue(getContext());
 
-        NavHostFragment navHostFragment = (NavHostFragment) getActivity().getSupportFragmentManager().findFragmentById(R.id.nav_host_fragment);
-        navController = navHostFragment.getNavController();
+        StringRequest getRequest = new StringRequest(Request.Method.POST, orderCompleteUrl,
+                new Response.Listener<String>()
+                {
+                    @Override
+                    public void onResponse(String response) {
+                        // response
+                        Log.d("Response", response);
+                        if(response.equals("UNAUTHORIZED")){
+                            Toast.makeText(getContext(), response, Toast.LENGTH_LONG).show();
+                        }
+                        else{
+                            Gson gsonObject = new Gson();
 
-        returnButton.setOnClickListener(new View.OnClickListener() {
+                            try {
+                                //JSONObject root = new JSONObject(response);
+                                //JSONArray itemsArray = root.getJSONArray("items");
+
+                                Log.d("Remove Item Response", response);
+                            } catch (Exception e) {
+                                e.printStackTrace();
+                            }
+
+                            //   Toast.makeText(getContext(), "Loaded User Profile", Toast.LENGTH_LONG).show();
+                        }
+
+                    }
+                },
+                new Response.ErrorListener()
+                {
+                    @Override
+                    public void onErrorResponse(VolleyError error) {
+                        // error
+                        NetworkResponse response = error.networkResponse;
+                        String errorMsg = "";
+                        if(response != null && response.data != null){
+                            String errorString = new String(response.data);
+                            Log.i("log error", errorString);
+                        }
+                    }
+                }
+        ) {
             @Override
-            public void onClick(View view) {
-                navController.navigate(R.id.action_nav_order_complete_to_nav_store);
-            }
-        });
+            public Map<String, String> getHeaders() {
+                Map<String, String>  params = new HashMap<>();
+                params.put("authorizationkey", mAuthorizationkey);
 
-        return view;
+                return params;
+            }
+        };
+
+        queue.add(getRequest);
+    }
+
+    public void loadCart(){
+        RequestQueue queue = Volley.newRequestQueue(getContext());
+
+        StringRequest getRequest = new StringRequest(Request.Method.GET, getCartUrl,
+                new Response.Listener<String>()
+                {
+                    @Override
+                    public void onResponse(String response) {
+                        // response
+                        Log.d("Response", response);
+                        if(response.equals("UNAUTHORIZED")){
+                            Toast.makeText(getContext(), response, Toast.LENGTH_LONG).show();
+                        }
+                        else{
+                            Gson gsonObject = new Gson();
+
+                            try {
+                                JSONObject root = new JSONObject(response);
+                                JSONArray itemsArray = root.getJSONArray("items");
+
+                                for(int i = 0; i < itemsArray.length(); i++){
+                                    JSONObject itemObj = itemsArray.getJSONObject(i);
+
+                                    StoreItem nItem = new StoreItem();
+
+                                    nItem.name = itemObj.getString("name");
+                                    nItem.quantity = itemObj.getInt("quantity");
+                                    nItem.photo = itemObj.getString("photo");
+                                    nItem.region = itemObj.getString("region");
+                                    nItem.discount = itemObj.getDouble("discount");
+                                    nItem.price = itemObj.getDouble("price");
+
+                                    cartList.add(nItem);
+
+                                }
+
+                                completeOrder();
+
+                                Log.d("Cart", response);
+                            } catch (JSONException e) {
+                                e.printStackTrace();
+                            }
+
+                            //   Toast.makeText(getContext(), "Loaded User Profile", Toast.LENGTH_LONG).show();
+                        }
+
+                    }
+                },
+                new Response.ErrorListener()
+                {
+                    @Override
+                    public void onErrorResponse(VolleyError error) {
+                        // error
+                        NetworkResponse response = error.networkResponse;
+                        String errorMsg = "";
+                        if(response != null && response.data != null){
+                            String errorString = new String(response.data);
+                            Log.i("log error", errorString);
+                        }
+                    }
+                }
+        ) {
+            @Override
+            public Map<String, String> getHeaders() {
+                Map<String, String>  params = new HashMap<>();
+                params.put("authorizationkey", mAuthorizationkey);
+
+                return params;
+            }
+        };
+
+        queue.add(getRequest);
     }
 }

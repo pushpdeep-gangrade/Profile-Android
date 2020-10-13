@@ -12,35 +12,55 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.navigation.NavController;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.android.volley.NetworkResponse;
+import com.android.volley.Request;
+import com.android.volley.RequestQueue;
+import com.android.volley.Response;
+import com.android.volley.VolleyError;
+import com.android.volley.toolbox.StringRequest;
+import com.android.volley.toolbox.Volley;
 import com.example.profileapp.MainActivity;
 import com.example.profileapp.R;
 import com.example.profileapp.models.StoreItem;
+import com.google.gson.Gson;
 
 import org.jetbrains.annotations.NotNull;
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
 
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.Serializable;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 public class StoreItemAdapter extends RecyclerView.Adapter<StoreItemViewHolder> {
     List<StoreItem> storeItemList = new ArrayList<>();
     Context context;
     NavController navController;
+    String mAuthorizationkey;
+    String postCartUrl = MainActivity.url + "cart";
+    List<StoreItem> cartList = new ArrayList<>();
 
     public StoreItemAdapter(@NonNull Context context, int resource, @NonNull List<StoreItem> storeItems,
-                            NavController navController) {
+                            NavController navController, String mAuthorizationkey, List<StoreItem> cartList) {
 
         this.storeItemList = storeItems;
         this.context = context;
         this.navController = navController;
+        this.mAuthorizationkey = mAuthorizationkey;
+        this.cartList = cartList;
+
         Log.d("In Constructor", "In Constructor");
 
     }
@@ -71,19 +91,48 @@ public class StoreItemAdapter extends RecyclerView.Adapter<StoreItemViewHolder> 
         itemPrice.setText("$" + String.valueOf(storeItem.price));
         //itemQuantity.setText("0");
 
+        for(int i = 0; i < cartList.size(); i++){
+            if(storeItem.name.equals(cartList.get(i).name)){
+                addToCart.setText("Remove from Cart");
+            }
+        }
+
         addToCart.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 if(addToCart.getText().toString().equals("Add to Cart")){
                     storeItem.quantity = Integer.parseInt((itemQuantity.getText().toString()));
-                    MainActivity.cartList.add(storeItem);
-                    addToCart.setText("Remove from Cart");
-                    Log.d("cart List", MainActivity.cartList.toString());
+                    if(storeItem.quantity > 0){
+                        //MainActivity.cartList.add(storeItem);
+                        addOrRemoveItemToCart(storeItem);
+                        addToCart.setText("Remove from Cart");
+                        cartList.add(storeItem);
+                        Log.d("cart List add", cartList.toString());
+                    }
+                    else{
+                        Toast.makeText(context, "Quantity has to be greater than 0", Toast.LENGTH_LONG).show();
+                    }
+
                 }
                 else{
-                    MainActivity.cartList.remove(storeItem);
+                    //int newQuantity = storeItem.quantity - (storeItem.quantity * 2);
+                    //storeItem.quantity = newQuantity;
+                    //MainActivity.cartList.remove(storeItem);
+
+                    StoreItem removeItem = new StoreItem();
+
+                    for(int i = 0; i < cartList.size(); i++){
+                        if(storeItem.name.equals(cartList.get(i).name)){
+                            removeItem = cartList.get(i);
+                            removeItem.quantity = removeItem.quantity - (removeItem.quantity*2);
+                        }
+                    }
+
+                    cartList.remove(removeItem);
+                    addOrRemoveItemToCart(removeItem);
                     addToCart.setText("Add to Cart");
-                    Log.d("cart List", MainActivity.cartList.toString());
+
+                    Log.d("cart List remove", cartList.toString());
                 }
             }
         });
@@ -112,5 +161,83 @@ public class StoreItemAdapter extends RecyclerView.Adapter<StoreItemViewHolder> 
     @Override
     public int getItemCount() {
         return storeItemList.size();
+    }
+
+    public void addOrRemoveItemToCart(final StoreItem item){
+        RequestQueue queue = Volley.newRequestQueue(context);
+
+        StringRequest getRequest = new StringRequest(Request.Method.POST, postCartUrl,
+                new Response.Listener<String>()
+                {
+                    @Override
+                    public void onResponse(String response) {
+                        // response
+                        Log.d("Response", response);
+                        if(response.equals("UNAUTHORIZED")){
+                            Toast.makeText(context, response, Toast.LENGTH_LONG).show();
+                        }
+                        else{
+                            Gson gsonObject = new Gson();
+
+                            try {
+                                //JSONObject root = new JSONObject(response);
+                                //JSONArray itemsArray = root.getJSONArray("items");
+
+                                Log.d("Add To Cart Response", response);
+                            } catch (Exception e) {
+                                e.printStackTrace();
+                            }
+
+                            //   Toast.makeText(getContext(), "Loaded User Profile", Toast.LENGTH_LONG).show();
+                        }
+
+                    }
+                },
+                new Response.ErrorListener()
+                {
+                    @Override
+                    public void onErrorResponse(VolleyError error) {
+                        // error
+                        NetworkResponse response = error.networkResponse;
+                        String errorMsg = "";
+                        if(response != null && response.data != null){
+                            String errorString = new String(response.data);
+                            Log.i("log error", errorString);
+                        }
+                    }
+                }
+        ) {
+            @Override
+            protected Map<String, String> getParams()
+            {
+
+                Map<String, String>  params = new HashMap<>();
+
+
+                params.put("name", item.name);
+                params.put("discount", String.valueOf(item.discount));
+                params.put("photo", item.photo);
+                params.put("price", String.valueOf(item.price));
+                params.put("quantity", String.valueOf(item.quantity));
+                params.put("region", item.region);
+
+
+                return params;
+            }
+
+            @Override
+            public Map<String, String> getHeaders() {
+                Map<String, String>  params = new HashMap<>();
+                params.put("authorizationkey", mAuthorizationkey);
+
+                return params;
+            }
+        };
+
+        queue.add(getRequest);
+    }
+
+    public void removeItemFromCart(){
+
     }
 }

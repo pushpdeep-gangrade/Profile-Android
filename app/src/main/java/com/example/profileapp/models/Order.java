@@ -7,6 +7,6 @@ import java.util.List;
 
 public class Order implements Serializable {
     public String orderId;
-    public Date orderDate;
+    public String orderDate;
     public List<StoreItem> items;
 }

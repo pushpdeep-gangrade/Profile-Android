@@ -18,11 +18,20 @@ import android.view.LayoutInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Toast;
 
+import com.android.volley.NetworkResponse;
+import com.android.volley.Request;
+import com.android.volley.RequestQueue;
+import com.android.volley.Response;
+import com.android.volley.VolleyError;
+import com.android.volley.toolbox.StringRequest;
+import com.android.volley.toolbox.Volley;
 import com.example.profileapp.MainActivity;
 import com.example.profileapp.R;
 import com.example.profileapp.login.LoginActivity;
 import com.example.profileapp.models.StoreItem;
+import com.google.gson.Gson;
 import com.google.gson.JsonObject;
 
 import org.json.JSONArray;
@@ -38,7 +47,9 @@ import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.io.Serializable;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 
 public class StoreFragment extends Fragment {
@@ -49,6 +60,8 @@ public class StoreFragment extends Fragment {
     private NavController navController;
     private String mAuthorizationkey;
     private static final String AUTH_KEY = "authorizationkey";
+    String getCartUrl = MainActivity.url + "cart";
+
 
     public StoreFragment() {
         // Required empty public constructor
@@ -128,14 +141,7 @@ public class StoreFragment extends Fragment {
                 Log.d("Store Item", storeItem.toString());
             }
 
-            // use a linear layout manager
-            LinearLayoutManager layoutManager = new LinearLayoutManager(getContext());
-            storeItemRecyclerView.setLayoutManager(layoutManager);
-
-            final StoreItemAdapter ad = new StoreItemAdapter(getContext(),
-                    android.R.layout.simple_list_item_1, storeItemArrayList, navController);
-
-            storeItemRecyclerView.setAdapter(ad);
+            loadCart();
 
             //storeItemArrayList.clear();
 
@@ -144,6 +150,94 @@ public class StoreFragment extends Fragment {
         }
 
 
+    }
+
+    public void setStoreItemRecyclerView(){
+        // use a linear layout manager
+        LinearLayoutManager layoutManager = new LinearLayoutManager(getContext());
+        storeItemRecyclerView.setLayoutManager(layoutManager);
+
+        final StoreItemAdapter ad = new StoreItemAdapter(getContext(),
+                android.R.layout.simple_list_item_1, storeItemArrayList, navController, mAuthorizationkey, cartList);
+
+        storeItemRecyclerView.setAdapter(ad);
+    }
+
+    public void loadCart(){
+        cartList.clear();
+
+        RequestQueue queue = Volley.newRequestQueue(getContext());
+
+        StringRequest getRequest = new StringRequest(Request.Method.GET, getCartUrl,
+                new Response.Listener<String>()
+                {
+                    @Override
+                    public void onResponse(String response) {
+                        // response
+                        Log.d("Response", response);
+                        if(response.equals("UNAUTHORIZED")){
+                            Toast.makeText(getContext(), response, Toast.LENGTH_LONG).show();
+                        }
+                        else{
+                            Gson gsonObject = new Gson();
+
+                            try {
+                                JSONObject root = new JSONObject(response);
+                                JSONArray itemsArray = root.getJSONArray("items");
+
+                                for(int i = 0; i < itemsArray.length(); i++){
+                                    JSONObject itemObj = itemsArray.getJSONObject(i);
+
+                                    StoreItem nItem = new StoreItem();
+
+                                    nItem.name = itemObj.getString("name");
+                                    nItem.quantity = itemObj.getInt("quantity");
+                                    nItem.photo = itemObj.getString("photo");
+                                    nItem.region = itemObj.getString("region");
+                                    nItem.discount = itemObj.getDouble("discount");
+                                    nItem.price = itemObj.getDouble("price");
+
+                                    cartList.add(nItem);
+
+                                }
+
+                                setStoreItemRecyclerView();
+
+
+                                Log.d("Cart", response);
+                            } catch (JSONException e) {
+                                e.printStackTrace();
+                            }
+
+                            //   Toast.makeText(getContext(), "Loaded User Profile", Toast.LENGTH_LONG).show();
+                        }
+
+                    }
+                },
+                new Response.ErrorListener()
+                {
+                    @Override
+                    public void onErrorResponse(VolleyError error) {
+                        // error
+                        NetworkResponse response = error.networkResponse;
+                        String errorMsg = "";
+                        if(response != null && response.data != null){
+                            String errorString = new String(response.data);
+                            Log.i("log error", errorString);
+                        }
+                    }
+                }
+        ) {
+            @Override
+            public Map<String, String> getHeaders() {
+                Map<String, String>  params = new HashMap<>();
+                params.put("authorizationkey", mAuthorizationkey);
+
+                return params;
+            }
+        };
+
+        queue.add(getRequest);
     }
 
 }

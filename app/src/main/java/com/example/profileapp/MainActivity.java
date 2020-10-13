@@ -133,34 +133,34 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
 
             return true;
         }
-        else if (item.getItemId() == R.id.checkout) {
-
-            final AlertDialog.Builder builder = new AlertDialog.Builder(this);
-            builder.setTitle("Check Out");
-
-            builder.setMessage("Would you like to check out?")
-            .setPositiveButton("Check Out", new DialogInterface.OnClickListener() {
-                @Override
-                public void onClick(DialogInterface dialogInterface, int i) {
-                    Bundle authBundle = new Bundle();
-                    authBundle.putString(AUTH_KEY, mAuthorizationkey);
-                    navController.navigate(R.id.nav_order_complete, authBundle);
-                }
-            }).setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
-                @Override
-                public void onClick(DialogInterface dialogInterface, int i) {
-
-                }
-            });
-
-            final AlertDialog dialog = builder.create();
-
-            builder.setCancelable(false);
-
-            dialog.show();
-
-            return true;
-        }
+//        else if (item.getItemId() == R.id.checkout) {
+//
+//            final AlertDialog.Builder builder = new AlertDialog.Builder(this);
+//            builder.setTitle("Check Out");
+//
+//            builder.setMessage("Would you like to check out?")
+//            .setPositiveButton("Check Out", new DialogInterface.OnClickListener() {
+//                @Override
+//                public void onClick(DialogInterface dialogInterface, int i) {
+//                    Bundle authBundle = new Bundle();
+//                    authBundle.putString(AUTH_KEY, mAuthorizationkey);
+//                    navController.navigate(R.id.nav_order_complete, authBundle);
+//                }
+//            }).setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
+//                @Override
+//                public void onClick(DialogInterface dialogInterface, int i) {
+//
+//                }
+//            });
+//
+//            final AlertDialog dialog = builder.create();
+//
+//            builder.setCancelable(false);
+//
+//            dialog.show();
+//
+//            return true;
+//        }
 
 
         return super.onOptionsItemSelected(item);

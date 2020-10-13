@@ -93,6 +93,9 @@ public class LoginActivity extends AppCompatActivity {
                                         prefs.edit().putString("email", user.email).commit();
                                         prefs.edit().putString("authKey", authkey).commit();
 
+                                        Log.d("Login", response);
+
+
 
                                     } catch (JSONException e) {
                                         e.printStackTrace();
@@ -104,6 +107,10 @@ public class LoginActivity extends AppCompatActivity {
                                     //   Log.d("AuthKey", authkey);
                                     Log.d("auth", authkey);
                                     authBundle.putString(AUTH_KEY, authkey); //Your id
+
+                                    SharedPreferences prefs = getSharedPreferences("info", MODE_PRIVATE);
+                                    //prefs.edit().putString("email", user.email).commit();
+                                    prefs.edit().putString("authKey", authkey).commit();
 
                                     gotoMainActivity.putExtras(authBundle); //Put your id to your next Intent
                                     startActivity(gotoMainActivity);

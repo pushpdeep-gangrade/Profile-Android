@@ -216,6 +216,12 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
             drawer.closeDrawer(GravityCompat.START);
             Log.d("Cart", "Clicked Cart");
         }
+        else if(item.getItemId() == R.id.nav_transaction_history){
+            navController.navigate(R.id.nav_transaction_history, authBundle);
+
+            drawer.closeDrawer(GravityCompat.START);
+            Log.d("Cart", "Clicked Transaction History");
+        }
         else if(item.getItemId() == R.id.nav_logout){
             SharedPreferences settings = getSharedPreferences("info", Context.MODE_PRIVATE);
             settings.edit().clear().commit();

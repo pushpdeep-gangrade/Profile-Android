@@ -107,6 +107,21 @@
         android:label="Previous Order"
         tools:layout="@layout/fragment_previous_order" >
     </fragment>
+    <fragment
+        android:id="@+id/nav_transaction_history"
+        android:name="com.example.profileapp.transactionhistory.TransactionHistoryFragment"
+        android:label="Transaction History"
+        tools:layout="@layout/fragment_transaction_history" >
+        <action
+            android:id="@+id/action_nav_transaction_history_to_nav_transaction_details"
+            app:destination="@id/nav_transaction_details" />
+    </fragment>
+    <fragment
+        android:id="@+id/nav_transaction_details"
+        android:name="com.example.profileapp.transactionhistory.TransactionDetailsFragment"
+        android:label="Transaction Details"
+        tools:layout="@layout/fragment_transaction_details" >
+    </fragment>
 
 
 </navigation>

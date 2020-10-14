@@ -114,12 +114,25 @@ public class StoreItemAdapter extends RecyclerView.Adapter<StoreItemViewHolder> 
             @Override
             public void onClick(View view) {
                 if(addToCart.getText().toString().equals("Add to Cart")){
-                    storeItem.quantity = Integer.parseInt((itemQuantity.getText().toString()));
-                    if(storeItem.quantity > 0){
+                    if(Integer.parseInt((itemQuantity.getText().toString())) > 0){
                         //MainActivity.cartList.add(storeItem);
+                        boolean inCart = false;
+
+                        for(int i = 0; i < cartList.size(); i++){
+                            if(storeItem.name.equals(cartList.get(i).name)){
+                                Log.d("Already in Cart", storeItem.name + " Quantity: " + storeItem.quantity);
+                                storeItem.quantity = storeItem.quantity + Integer.parseInt((itemQuantity.getText().toString()));
+                                inCart = true;
+                            }
+                        }
+
+                        if(!inCart){
+                            cartList.add(storeItem);
+                            storeItem.quantity = Integer.parseInt((itemQuantity.getText().toString()));
+                        }
+
                         addOrRemoveItemToCart(storeItem);
-                        addToCart.setText("Remove from Cart");
-                        cartList.add(storeItem);
+                        //addToCart.setText("Remove from Cart");
                         Log.d("cart List add", cartList.toString());
                     }
                     else{

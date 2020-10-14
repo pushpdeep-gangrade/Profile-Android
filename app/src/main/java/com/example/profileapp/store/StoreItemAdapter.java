@@ -89,12 +89,22 @@ public class StoreItemAdapter extends RecyclerView.Adapter<StoreItemViewHolder> 
         assert storeItem != null;
         itemName.setText(storeItem.name);
         itemPrice.setText("$" + String.valueOf(storeItem.price));
-        //itemQuantity.setText("0");
+
+        boolean inCart = false;
+
+        Log.d("Cart Size", String.valueOf(cartList.size()));
 
         for(int i = 0; i < cartList.size(); i++){
             if(storeItem.name.equals(cartList.get(i).name)){
-                addToCart.setText("Remove from Cart");
+               inCart = true;
             }
+        }
+
+        if(inCart){
+            addToCart.setText("Remove from Cart");
+        }
+        else{
+            addToCart.setText("Add to Cart");
         }
 
         addToCart.setOnClickListener(new View.OnClickListener() {
@@ -115,10 +125,6 @@ public class StoreItemAdapter extends RecyclerView.Adapter<StoreItemViewHolder> 
 
                 }
                 else{
-                    //int newQuantity = storeItem.quantity - (storeItem.quantity * 2);
-                    //storeItem.quantity = newQuantity;
-                    //MainActivity.cartList.remove(storeItem);
-
                     StoreItem removeItem = new StoreItem();
 
                     for(int i = 0; i < cartList.size(); i++){
@@ -151,10 +157,6 @@ public class StoreItemAdapter extends RecyclerView.Adapter<StoreItemViewHolder> 
         {
             return;
         }
-
-        //ImageView iv_coverPhoto_trips = convertView.findViewById(R.id.iv_coverPhoto_trips);
-        //Log.d(TAG, "trip url: " + trip.url);
-        //Picasso.get().load(trip.url).into(iv_coverPhoto_trips);
 
     }
 
@@ -237,7 +239,4 @@ public class StoreItemAdapter extends RecyclerView.Adapter<StoreItemViewHolder> 
         queue.add(getRequest);
     }
 
-    public void removeItemFromCart(){
-
-    }
 }

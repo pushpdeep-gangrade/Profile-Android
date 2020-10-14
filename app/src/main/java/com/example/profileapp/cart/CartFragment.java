@@ -68,7 +68,7 @@ public class CartFragment extends Fragment {
     RecyclerView cartItemRecyclerView;
     View view;
     Button pay;
-    Button checkout;
+    Button checkout, clearCart;
     TextView textviewPayment, currentTotalText;
     private NavController navController;
     private String mAuthorizationkey;
@@ -110,6 +110,7 @@ public class CartFragment extends Fragment {
         checkout = view.findViewById(R.id.button_checkout);
         textviewPayment = view.findViewById(R.id.textview_payment);
         currentTotalText = view.findViewById(R.id.cart_currentTotal);
+        clearCart = view.findViewById(R.id.cart_clearCart);
 
         textviewPayment.setVisibility(View.INVISIBLE);
         pay.setVisibility(View.INVISIBLE);
@@ -132,7 +133,19 @@ public class CartFragment extends Fragment {
         checkout.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                getclientToken();
+                if(cartList.size() > 0){
+                    getclientToken();
+                }
+                else{
+                    Toast.makeText(getContext(), "Cart is empty", Toast.LENGTH_LONG).show();
+                }
+            }
+        });
+        
+        clearCart.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                clearCart();
             }
         });
 
@@ -199,6 +212,65 @@ public class CartFragment extends Fragment {
                             }
 
                             //   Toast.makeText(getContext(), "Loaded User Profile", Toast.LENGTH_LONG).show();
+                        }
+
+                    }
+                },
+                new Response.ErrorListener()
+                {
+                    @Override
+                    public void onErrorResponse(VolleyError error) {
+                        // error
+                        NetworkResponse response = error.networkResponse;
+                        String errorMsg = "";
+                        if(response != null && response.data != null){
+                            String errorString = new String(response.data);
+                            Log.i("log error", errorString);
+                        }
+                    }
+                }
+        ) {
+            @Override
+            public Map<String, String> getHeaders() {
+                Map<String, String>  params = new HashMap<>();
+                params.put("authorizationkey", mAuthorizationkey);
+
+                return params;
+            }
+        };
+
+        queue.add(getRequest);
+    }
+
+    public void clearCart(){
+        cartList.clear();
+
+        RequestQueue queue = Volley.newRequestQueue(getContext());
+
+        StringRequest getRequest = new StringRequest(Request.Method.DELETE, getCartUrl,
+                new Response.Listener<String>()
+                {
+                    @Override
+                    public void onResponse(String response) {
+                        // response
+                        Log.d("Response", response);
+                        if(response.equals("UNAUTHORIZED")){
+                            Toast.makeText(getContext(), response, Toast.LENGTH_LONG).show();
+                        }
+                        else{
+
+                            try {
+                                Log.d("Clear Cart", response);
+
+                                Toast.makeText(getContext(), "Cart Cleared", Toast.LENGTH_LONG).show();
+
+                                setCartRecyclerView();
+
+                                getCurrentTotal();
+                            } catch (Exception e) {
+                                e.printStackTrace();
+                            }
+
                         }
 
                     }

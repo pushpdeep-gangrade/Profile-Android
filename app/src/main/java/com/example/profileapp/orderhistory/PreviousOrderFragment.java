@@ -28,7 +28,6 @@ public class PreviousOrderFragment extends Fragment {
     TextView orderDate, total;
     private NavController navController;
     Order order;
-    private String mAuthorizationkey;
     private static final String AUTH_KEY = "authorizationkey";
 
     public PreviousOrderFragment() {
@@ -49,7 +48,7 @@ public class PreviousOrderFragment extends Fragment {
             order = (Order) getArguments().getSerializable("order");
             Log.d("Order", order.toString());
 
-            mAuthorizationkey = getArguments().getString(AUTH_KEY);
+            String mAuthorizationkey = getArguments().getString(AUTH_KEY);
             if(mAuthorizationkey != null){
                 Log.d("previous auth", mAuthorizationkey);
 

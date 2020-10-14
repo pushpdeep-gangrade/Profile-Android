@@ -4,14 +4,14 @@
     <item
         android:id="@+id/page_1"
         android:enabled="true"
-        android:title="Profile"/>
+        android:title="@string/profile"/>
     <item
         android:id="@+id/page_2"
         android:enabled="true"
-        android:title="Cart"/>
+        android:title="@string/cart"/>
     <item
         android:id="@+id/page_3"
         android:enabled="true"
-        android:title="Product"/>
+        android:title="@string/product"/>
 
 </menu>

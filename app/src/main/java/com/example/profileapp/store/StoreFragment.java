@@ -51,7 +51,6 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-
 public class StoreFragment extends Fragment {
     List<StoreItem> storeItemArrayList = new ArrayList<>();
     List<StoreItem> cartList = new ArrayList<>();

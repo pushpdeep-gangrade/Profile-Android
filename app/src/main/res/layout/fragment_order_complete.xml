@@ -48,7 +48,8 @@
                 android:layout_height="wrap_content"
                 android:textAlignment="textEnd"
                 android:layout_weight="1"
-                android:text="TextView" />
+                android:text="@string/placeholder_text"
+                tools:ignore="InefficientWeight" />
         </LinearLayout>
 
         <LinearLayout
@@ -69,15 +70,16 @@
                 android:layout_height="wrap_content"
                 android:textAlignment="textEnd"
                 android:layout_weight="1"
-                android:text="TextView" />
+                android:text="@string/placeholder_text" />
         </LinearLayout>
     </LinearLayout>
 
     <Button
         android:id="@+id/orderComplete_returnButton"
         style="?attr/borderlessButtonStyle"
-        android:layout_width="wrap_content"
+        android:layout_width="143dp"
         android:layout_height="40dp"
+        android:background="@color/grey"
         android:text="@string/return_to_store"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"

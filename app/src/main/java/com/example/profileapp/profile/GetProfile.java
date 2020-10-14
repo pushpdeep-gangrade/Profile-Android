@@ -1,5 +1,6 @@
 package com.example.profileapp.profile;
 
+import android.annotation.SuppressLint;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
@@ -14,6 +15,7 @@ import java.io.IOException;
 import java.net.MalformedURLException;
 import java.net.URL;
 
+@SuppressLint("StaticFieldLeak")
 public class GetProfile extends AsyncTask<String, Void, Integer> {
      final Context context;
      final String token;

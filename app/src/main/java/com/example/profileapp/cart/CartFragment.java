@@ -1,5 +1,6 @@
 package com.example.profileapp.cart;
 
+import android.annotation.SuppressLint;
 import android.content.Intent;
 import android.os.Bundle;
 
@@ -60,8 +61,8 @@ import static android.app.Activity.RESULT_CANCELED;
 import static android.app.Activity.RESULT_OK;
 
 
+@SuppressWarnings("ALL")
 public class CartFragment extends Fragment {
-    private ArrayList<StoreItem> storeItemArrayList = new ArrayList<>();
     List<StoreItem> cartList = new ArrayList<>();
     RecyclerView cartItemRecyclerView;
     View view;
@@ -87,7 +88,7 @@ public class CartFragment extends Fragment {
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         if (getArguments() != null) {
-            storeItemArrayList = (ArrayList<StoreItem>) getArguments().getSerializable("cartList");
+            ArrayList<StoreItem> storeItemArrayList = (ArrayList<StoreItem>) getArguments().getSerializable("cartList");
             Log.d("Store Items cart", storeItemArrayList.toString());
 
             mAuthorizationkey = getArguments().getString(AUTH_KEY);
@@ -320,6 +321,7 @@ public class CartFragment extends Fragment {
         );
     }
 
+    @SuppressLint("SetTextI18n")
     public void getCurrentTotal(){
         currentTotal = 0;
 

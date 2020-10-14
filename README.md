@@ -54,8 +54,63 @@
   <br />
   Profile:
   <br />
-  <img src="https://github.com/pushpdeep-gangrade/Profile-Android/blob/main/screenshots/ProfileDocumentationGETAPI.png" width=800>
+  ```
+  Get Other User Profile
+  GET METHOD
+  http://104.248.113.55:8088/v1/user/profile/other/:email
+
+  Request:
+    Header:
+      authorizationkey: user's generated key
+
+  Response:
+    Body:
+     {
+      "emailId": "jsmith@email.com",
+      "age": "27",
+      "fname": "John",
+      "lname": "Smith",
+      "address": "123 JS Street"
+      }
+  ```
   <br />
-  <img src="https://github.com/pushpdeep-gangrade/Profile-Android/blob/main/screenshots/ProfileDocumentationPOSTAPI.png" width=800>
-  
+  ```
+  Get Current User Profile
+  GET METHOD
+  http://104.248.113.55:8088/v1/user/profile/me
+
+  Request:
+    Header:
+      authorizationkey: user's generated key
+
+  Response:
+    Body:
+     {
+      "emailId": "jsmith@email.com",
+      "age": "27",
+      "fname": "John",
+      "lname": "Smith",
+      "address": "123 JS Street"
+      }
+  ```
+  <br />
+  ```
+  Get Current User Profile
+  GET METHOD
+  http://104.248.113.55:8088/v1/user/profile/me
+
+  Request:
+    Header:
+      authorizationkey: user's generated key
+
+  Response:
+    Body:
+     {
+      "emailId": "jsmith@email.com",
+      "age": "27",
+      "fname": "John",
+      "lname": "Smith",
+      "address": "123 JS Street"
+      }
+  ```
   ### Database Schema

@@ -54,7 +54,7 @@ Profile:
   - The customerId should be provided to BrainTree to enable BrainTree to display the user's previously used payment methods.
   - The user should be able to complete the payment process using a new credit card or a previously used credit card.
   - The completed transactions should be stored on your server.
-- The app should also handle cases of invalid credit cards, use the cards provided at https://developers.braintreepayments.com/guides/credit-cards/testing-go-live/php for testing.
+- ~~The app should also handle cases of invalid credit cards, use the cards provided at https://developers.braintreepayments.com/guides/credit-cards/testing-go-live/php for testing.~~
 - Order History:
   - The app should enable the user to view their previous orders and the details of each order.
 - Submission should include:

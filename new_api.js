@@ -320,7 +320,7 @@ app.post('/v1/user/cart', authMiddleware, function(req, res) {
           var item_index = result.items.findIndex(obj => obj.name === req.body.name);
           //console.log(result.items[item_index].name);
           //If removing items AND removing all or "more" of the item than currently in cart just remove the item altogether
-          if (req.body.quantity < 0 && result.items[item_index].quantity <= Math.abs(req.body.quantity)) {
+          if (parseInt(req.body.quantity) < 0 && result.items[item_index].quantity <= Math.abs(parseInt(req.body.quantity))) {
             var myquery = {
               _id: req.encode + "-cart"
             };
@@ -358,7 +358,7 @@ app.post('/v1/user/cart', authMiddleware, function(req, res) {
                 "items.$.region": req.body.region,
               },
               $inc: {
-                "items.$.quantity": req.body.quantity
+                "items.$.quantity": parseInt(req.body.quantity)
               }
             };
 
@@ -374,7 +374,7 @@ app.post('/v1/user/cart', authMiddleware, function(req, res) {
               return client.close();
             })
           }
-        } else if (req.body.quantity > 0) {
+        } else if (parseInt(req.body.quantity) > 0) {
           //Else item is not already in cart so make sure not removing items
           var myquery = {
             _id: req.encode + "-cart"
@@ -387,7 +387,7 @@ app.post('/v1/user/cart', authMiddleware, function(req, res) {
                 photo: req.body.photo,
                 price: req.body.price,
                 region: req.body.region,
-                quantity: req.body.quantity
+                quantity: parseInt(req.body.quantity)
               }
             }
           };

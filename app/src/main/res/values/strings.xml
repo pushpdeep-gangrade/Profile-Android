@@ -31,4 +31,5 @@
     <string name="order_number">Order Number</string>
     <string name="order_complete">Order Complete!</string>
     <string name="return_to_store">Return to Store</string>
+    <string name="clear_cart">Clear Cart</string>
 </resources>

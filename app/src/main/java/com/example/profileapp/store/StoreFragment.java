@@ -18,6 +18,7 @@ import android.view.LayoutInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ProgressBar;
 import android.widget.Toast;
 
 import com.android.volley.NetworkResponse;
@@ -61,6 +62,7 @@ public class StoreFragment extends Fragment {
     private String mAuthorizationkey;
     private static final String AUTH_KEY = "authorizationkey";
     String getCartUrl = MainActivity.url + "cart";
+    ProgressBar loadProducts;
 
 
     public StoreFragment() {
@@ -91,6 +93,8 @@ public class StoreFragment extends Fragment {
         view = inflater.inflate(R.layout.fragment_store, container, false);
 
         storeItemRecyclerView = view.findViewById(R.id.store_itemList);
+        loadProducts = (ProgressBar) view.findViewById(R.id.store_loadingProducts);
+
 
         NavHostFragment navHostFragment = (NavHostFragment) getActivity().getSupportFragmentManager().findFragmentById(R.id.nav_host_fragment);
         navController = navHostFragment.getNavController();
@@ -205,6 +209,8 @@ public class StoreFragment extends Fragment {
 
 
                                 Log.d("Cart", response);
+
+                                loadProducts.setVisibility(View.INVISIBLE);
                             } catch (JSONException e) {
                                 e.printStackTrace();
                             }

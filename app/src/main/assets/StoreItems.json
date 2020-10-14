@@ -33,7 +33,7 @@
             "quantity": 0
         },
         {
-            "discount": 10,
+            "discount": 0.10,
             "name": "Pineapple",
             "photo": "pineapple.png",
             "price": 1.18,
@@ -41,7 +41,7 @@
             "quantity": 0
         },
         {
-            "discount": 10,
+            "discount": 0.10,
             "name": "Croissants",
             "photo": "croissants.png",
             "price": 2.79,
@@ -49,39 +49,39 @@
             "quantity": 0
         },
         {
-            "discount": 20,
-            "name": "Brach's Jelly Beans",
-            "photo": null,
+            "discount": 0.20,
+            "name": "Jelly Beans",
+            "photo": "jelly-beans.png",
             "price": 2.21,
             "region": "grocery",
             "quantity": 0
         },
         {
-            "discount": 20,
+            "discount": 0.20,
             "name": "Dial Soap",
-            "photo": "jelly-beans.png",
+            "photo": "dial.jpg",
             "price": 2.99,
             "region": "lifestyle",
             "quantity": 0
         },
         {
-            "discount": 15,
-            "name": "Scotch Brite Sponges",
+            "discount": 0.15,
+            "name": "Sponges",
             "photo": "scotch-brite-sponges.png",
             "price": 5.89,
             "region": "lifestyle",
             "quantity": 0
         },
         {
-            "discount": 15,
-            "name": "Fresh Express Lettuce",
+            "discount": 0.15,
+            "name": "Lettuce",
             "photo": "lettuce.jpg",
             "price": 3.69,
             "region": "produce",
             "quantity": 0
         },
         {
-            "discount": 15,
+            "discount": 0.15,
             "name": "Coca Cola",
             "photo": "coca-cola.png",
             "price": 6.99,
@@ -89,7 +89,7 @@
             "quantity": 0
         },
         {
-            "discount": 10,
+            "discount": 0.10,
             "name": "Gatorade",
             "photo": "gatorade.png",
             "price": 3.89,
@@ -97,15 +97,15 @@
             "quantity": 0
         },
         {
-            "discount": 10,
-            "name": "Organix Conditioner",
+            "discount": 0.10,
+            "name": "Conditioner",
             "photo": "organix-conditioner.png",
             "price": 13.46,
             "region": "lifestyle",
             "quantity": 0
         },
         {
-            "discount": 10,
+            "discount": 0.10,
             "name": "Spinach",
             "photo": "spinach.png",
             "price": 1.23,
@@ -113,15 +113,15 @@
             "quantity": 0
         },
         {
-            "discount": 15,
-            "name": "Cranberry Cocktail",
+            "discount": 0.15,
+            "name": "Cranberry C",
             "photo": "cranberry-cocktail.png",
             "price": 1.89,
             "region": "grocery",
             "quantity": 0
         },
         {
-            "discount": 20,
+            "discount": 0.20,
             "name": "Milk",
             "photo": "milk.jpg",
             "price": 10.5,
@@ -129,7 +129,7 @@
             "quantity": 0
         },
         {
-            "discount": 15,
+            "discount": 0.15,
             "name": "HI-C Fruit Punch",
             "photo": "hi-c-fruit-punch.png",
             "price": 4.67,
@@ -137,7 +137,7 @@
             "quantity": 0
         },
         {
-            "discount": 10,
+            "discount": 0.10,
             "name": "Nectarines",
             "photo": "fresh-nectarines.png",
             "price": 3.67,
@@ -145,15 +145,15 @@
             "quantity": 0
         },
         {
-            "discount": 10,
-            "name": "Fresh Seedless Whole Watermelon",
+            "discount": 0.10,
+            "name": "Watermelon",
             "photo": "watermellon.jpg",
             "price": 6.99,
             "region": "produce",
             "quantity": 0
         },
         {
-            "discount": 15,
+            "discount": 0.15,
             "name": "US Weekly",
             "photo": "us-weekly.png",
             "price": 4.99,

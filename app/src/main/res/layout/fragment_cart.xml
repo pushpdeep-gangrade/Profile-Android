@@ -17,7 +17,7 @@
         app:layout_constraintHorizontal_bias="0.49"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/cart_currentTotal"
-        app:layout_constraintVertical_bias="0.242" />
+        app:layout_constraintVertical_bias="0.398" />
 
     <TextView
         android:id="@+id/textview_payment"
@@ -71,4 +71,18 @@
         app:layout_constraintHorizontal_bias="0.0"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
+
+    <Button
+        android:id="@+id/cart_clearCart"
+        android:layout_width="wrap_content"
+        android:layout_height="40dp"
+        android:layout_marginTop="16dp"
+        android:layout_marginBottom="16dp"
+        android:text="@string/clear_cart"
+        app:layout_constraintBottom_toTopOf="@+id/cart_itemList"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.947"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintVertical_bias="0.888" />
 </androidx.constraintlayout.widget.ConstraintLayout>

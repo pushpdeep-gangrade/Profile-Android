@@ -477,7 +477,7 @@ app.get('/v1/user/order/history', authMiddleware, function(req, res) {
 });
 
 //Update Current User's Order History (POST)
-app.post('/v1/user/cart', authMiddleware, function(req, res) {
+app.post('/v1/user/order/history', authMiddleware, function(req, res) {
   console.log("post cart: " + req.encode + "-cart");
   if (typeof req.body.name === "undefined" || typeof req.body.discount === "undefined" ||
     typeof req.body.photo === "undefined" || typeof req.body.price === "undefined" ||

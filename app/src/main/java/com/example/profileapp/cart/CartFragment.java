@@ -49,6 +49,7 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.io.UnsupportedEncodingException;
 import java.text.DecimalFormat;
 import java.text.NumberFormat;
 import java.util.ArrayList;
@@ -379,6 +380,12 @@ public class CartFragment extends Fragment {
                     public void onSuccess(int statusCode, Header[] headers, byte[] responseBody) {
                         mProgressBar.setVisibility(View.GONE);
                         Toast.makeText(getContext(), "Payment successful", Toast.LENGTH_SHORT).show();
+                        try {
+                            String str = new String(responseBody, "UTF-8");
+                            Toast.makeText(, "", Toast.LENGTH_SHORT).show();
+                        } catch (UnsupportedEncodingException e) {
+                            e.printStackTrace();
+                        }
                         Log.d("demo","sent");
 
                         Bundle authBundle = new Bundle();

@@ -126,15 +126,23 @@ app.post('/v1/user/signup', (req, res) => {
               orders: []
             };
 
-            client.db('API').collection('OrderHistory').insertOne(myobj3, function(err3, result3) {
-              if (err3)
-                res.status(INTERNAL_SERVER_ERROR).send(err3);
-              else if (result3.insertedCount == 1) {
-                res.status(OK).send("Signed up Successfully");
-                console.log(thenResult.insertedId);
-              }
-              //return client.close();
-            })
+            client.db('API').collection('OrderHistory').insertOne(myobj3).then(thenResult3 => {
+              //Populate empty transcations for user on signup
+              var myobj4 = {
+                _id: result.customer.id + "-transactions",
+                transactions: []
+              };
+              
+              client.db('API').collection('Transactions').insertOne(myobj4, function(err4, result4) {
+                if (err4)
+                  res.status(INTERNAL_SERVER_ERROR).send(err4);
+                else if (result4.insertedCount == 1) {
+                  res.status(OK).send("Signed up Successfully");
+                  console.log(thenResult4.insertedId);
+                }
+                return client.close();
+              })
+            }).catch(err3 => res.status(INTERNAL_SERVER_ERROR).send(err3))
           }).catch(err2 => res.status(INTERNAL_SERVER_ERROR).send(err2))
         }).catch(err => {
           if (err.code == 11000) {
@@ -149,8 +157,6 @@ app.post('/v1/user/signup', (req, res) => {
 
   }
 });
-
-
 
 //Log User In (POST)
 app.post('/v1/user/login', function(req, res) {
@@ -529,8 +535,8 @@ app.post('/v1/user/order/history',authMiddleware,function(req,res){
   });
 });
 
-app.get('/v1/user/transaction', authMiddleware, function(req, res) {
-  console.log("get transaction: " + req.encode + "-transaction");
+app.get('/v1/user/transaction/history', authMiddleware, function(req, res) {
+  console.log("get transaction: " + req.encode + "-transactions");
   if (!req.params) {
     res.status(BAD_REQUEST).send("Bad request Check parameters");
   } else {
@@ -539,8 +545,8 @@ app.get('/v1/user/transaction', authMiddleware, function(req, res) {
       useUnifiedTopology: true
     });
     client.connect().then(() => {
-      client.db('API').collection('Transaction').findOne({
-        _id: req.encode + "-transaction"
+      client.db('API').collection('Transactions').findOne({
+        _id: req.encode + "-transactions"
       }, function(err, result) {
         if (err)
           console.log(err);
@@ -552,7 +558,6 @@ app.get('/v1/user/transaction', authMiddleware, function(req, res) {
     });
   }
 });
-
 
 app.get("/v1/payment/client_token", authMiddleware, (req, res) => {
   console.log("get token");
@@ -591,6 +596,40 @@ if (err){
         console.log(err);
 }else if(Boolean(result.success)){
       console.log(result);
+      //Start Rockford Edit
+      client = new MongoClient(url, { useNewUrlParser: true, useUnifiedTopology: true });
+      client.connect().then(() => {
+        //Add completed transaction to transactions
+        var myquery = {
+          _id: req.encode + "-transactions",
+        };
+        var newvalues = {
+          $addToSet: {
+            transactions: {
+              tId: result.transaction.id,
+              tAmount: result.transaction.amount,
+              tType: result.transaction.type,
+              tStatus: result.transaction.status,
+              tCustomer: result.transaction.customer.firstName + " " + result.transaction.customer.lastName,
+              tMaskedNumber: result.transaction.creditCard.maskedNumber,
+              tCardType: result.transaction.creditCard.cardType
+            }
+          }
+        };
+
+        client.db('API').collection('Transactions').updateOne(myquery, newvalues, {
+          upsert: true
+        }, function(err, result) {
+          //console.log(result)
+          if (err) {
+            //res.status(INTERNAL_SERVER_ERROR).send(err);
+          } else {
+            //res.status(OK).send(result);
+          }
+          return client.close();
+        })
+      });
+      //End Rockford Edit
       res.status(OK).send(result.message);
 
     }

@@ -477,70 +477,120 @@ app.get('/v1/user/order/history', authMiddleware, function(req, res) {
 });
 
 //Update Current User's Order History (POST)
-app.post('/v1/user/order/complete', authMiddleware, function(req, res) {
-  console.log("post orders: " + req.encode + "-orders");
-  client = new MongoClient(url, {
-    useNewUrlParser: true,
-    useUnifiedTopology: true
-  });
-  client.connect().then(() => {
-    //Check for cart
-    client.db('API').collection('Cart').findOne({
-      _id: req.encode + "-cart"
-    }).then(result => {
-      //If cart has at least 1 item in it
-      if (result.items.length > 0) {
-        var myquery = {
-          _id: req.encode + "-cart"
-        };
-        var newvalues = {
-          $set: {
-            items: []
-          }
-        };
+app.post('/v1/user/cart', authMiddleware, function(req, res) {
+  console.log("post cart: " + req.encode + "-cart");
+  if (typeof req.body.name === "undefined" || typeof req.body.discount === "undefined" ||
+    typeof req.body.photo === "undefined" || typeof req.body.price === "undefined" ||
+    typeof req.body.region === "undefined" || typeof req.body.quantity === "undefined") {
+    res.status(BAD_REQUEST).send("Bad request Check parameters or Body");
+  } else {
+    client = new MongoClient(url, {
+      useNewUrlParser: true,
+      useUnifiedTopology: true
+    });
+    client.connect().then(() => {
+      //Check if item is in cart already
+      client.db('API').collection('Cart').findOne({
+        _id: req.encode + "-cart",
+        "items.name": req.body.name
+      }).then(result => {
+        //If item is already in the cart
+        if (result != null) {
+          //Get item index
+          var item_index = result.items.findIndex(obj => obj.name === req.body.name);
+          //console.log(result.items[item_index].name);
+          //If removing items AND removing all or "more" of the item than currently in cart just remove the item altogether
+          if (req.body.quantity < 0 && result.items[item_index].quantity <= Math.abs(req.body.quantity)) {
+            var myquery = {
+              _id: req.encode + "-cart"
+            };
+            var newvalues = {
+              $pull: {
+                items: {
+                  "name": req.body.name
+                }
+              }
+            };
 
-        //Clear the cart of all items
-        client.db('API').collection('Cart').updateOne(myquery, newvalues, {
-          upsert: true
-        }).then(result2 => {
-          //Then create order history entry using date and order items
-          var date_ob = new Date();
-          console.log(`${date_ob.getFullYear()}-${date_ob.getMonth()+1}-${date_ob.getDate()}`);
-          var myquery2 = {
-            _id: req.encode + "-orders"
+            client.db('API').collection('Cart').updateOne(myquery, newvalues, {
+              upsert: true
+            }, function(err, result) {
+              //console.log(result)
+              if (err) {
+                res.status(INTERNAL_SERVER_ERROR).send(err);
+              } else {
+                res.status(OK).send("Record Removed");
+              }
+              return client.close();
+            })
+          } else {
+            //Else not removing items OR removing some but not all
+            var myquery = {
+              _id: req.encode + "-cart",
+              "items.name": req.body.name
+            };
+            var newvalues = {
+              $set: {
+                "items.$.name": req.body.name,
+                "items.$.discount": req.body.discount,
+                "items.$.photo": req.body.photo,
+                "items.$.price": req.body.price,
+                "items.$.region": req.body.region,
+              },
+              $inc: {
+                "items.$.quantity": req.body.quantity
+              }
+            };
+
+            client.db('API').collection('Cart').updateOne(myquery, newvalues, {
+              upsert: true
+            }, function(err, result) {
+              //console.log(result)
+              if (err) {
+                res.status(INTERNAL_SERVER_ERROR).send(err);
+              } else {
+                res.status(OK).send("Record Updated");
+              }
+              return client.close();
+            })
+          }
+        } else if (req.body.quantity > 0) {
+          //Else item is not already in cart so make sure not removing items
+          var myquery = {
+            _id: req.encode + "-cart"
           };
-          var newvalues2 = {
+          var newvalues = {
             $addToSet: {
-              orders: {
-                date: `${date_ob.getFullYear()}-${date_ob.getMonth()+1}-${date_ob.getDate()}`,
-                items: result.items
+              items: {
+                name: req.body.name,
+                discount: req.body.discount,
+                photo: req.body.photo,
+                price: req.body.price,
+                region: req.body.region,
+                quantity: req.body.quantity
               }
             }
           };
 
-          //Place order into order history for User
-          client.db('API').collection('OrderHistory').updateOne(myquery2, newvalues2, {
+          client.db('API').collection('Cart').updateOne(myquery, newvalues, {
             upsert: true
-          }, function(err3, result3) {
-            if (err3) {
-              res.status(INTERNAL_SERVER_ERROR).send(err3);
-            } else {
-              res.status(OK).send("Order Complete");
+          }, function(err, result) {
+            if (err)
+              res.status(INTERNAL_SERVER_ERROR).send(err);
+            else {
+              res.status(OK).send("Record Added");
             }
             return client.close();
           })
-        }).catch(err2 => {
-          res.status(BAD_REQUEST).send("Bad Request: CART NOT EMPTIED\n" + err2);
-        })
-
-      } else {
-        res.status(BAD_REQUEST).send("Bad Request: CART EMPTY");
-      }
-    }).catch(err => {
-      res.status(BAD_REQUEST).send("Bad Request: CART NOT FOUND\n" + err);
-    })
-  });
+        } else {
+          res.status(BAD_REQUEST).send("Bad Request: NO ITEM TO REMOVE FROM CART");
+        }
+      })
+    });
+  }
 });
+
+
 
 app.get("/v1/payment/client_token", authMiddleware, (req, res) => {
   console.log("get token");
@@ -558,26 +608,35 @@ app.get("/v1/payment/client_token", authMiddleware, (req, res) => {
 
 app.post("/v1/payment/checkout", authMiddleware, (req, res) => {
   const nonceFromTheClient = req.body.payment_method_nonce;
-  console.log(req.body.payment_method_nonce);
+//  console.log(req.body.payment_method_nonce);
+//console.log(req.params);
+console.log("body" + req.body);
   gateway.transaction.sale({
-    amount: "10.00",
+    amount: req.body.amount,
     paymentMethodNonce: nonceFromTheClient,
     customer: {
-      firstName: "Pushp",
-      lastName: "deep",
-      email: "drew@example.com"
+      firstName: req.body.firstname,
+      lastName: req.body.lastname,
+      email: req.body.email
     },
     options: {
       storeInVaultOnSuccess: true,
       submitForSettlement: true
     }
   }, (err, result) => {
-    if (err)
-      console.log(err);
-    else {
+console.log(result.success);
+console.log("error" + err);
+if (err){
+      res.status(BAD_REQUEST).send(err.message);
+        console.log(err);
+}else if(Boolean(result.success)){
       console.log(result);
-      res.status(OK).send("Successful");
+      res.status(OK).send(result.message);
     }
+        else{
+        res.status(BAD_REQUEST).send(result.message);
+        console.log(result.message);
+}
   });
   // Use payment method nonce here
 });

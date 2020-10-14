@@ -105,7 +105,7 @@ public class LoginActivity extends AppCompatActivity {
                                     Intent gotoMainActivity = new Intent(LoginActivity.this, MainActivity.class);
                                     Bundle authBundle = new Bundle();
                                     //   Log.d("AuthKey", authkey);
-                                    Log.d("auth", authkey);
+                                 //   Log.d("auth", authkey);
                                     authBundle.putString(AUTH_KEY, authkey); //Your id
 
                                     SharedPreferences prefs = getSharedPreferences("info", MODE_PRIVATE);

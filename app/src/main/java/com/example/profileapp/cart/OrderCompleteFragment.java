@@ -50,7 +50,7 @@ public class OrderCompleteFragment extends Fragment {
     private static final String AUTH_KEY = "authorizationkey";
     List<StoreItem> cartList = new ArrayList<>();
     String getCartUrl = MainActivity.url + "cart";
-    String orderCompleteUrl = MainActivity.url + "order/complete";
+    String orderCompleteUrl = MainActivity.url + "order/history";
 
 
     public static OrderCompleteFragment newInstance(String param1, String param2) {

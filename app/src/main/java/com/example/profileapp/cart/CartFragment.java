@@ -146,7 +146,37 @@ public class CartFragment extends Fragment {
         clearCart.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                clearCart();
+                final AsyncHttpClient client = new AsyncHttpClient();
+                client.addHeader("authorizationkey", mAuthorizationkey);
+                client.get( "http://104.248.113.55:8088/v1/user/transaction/", new TextHttpResponseHandler() {
+                    @Override
+                    public void onFailure(int statusCode, Header[] headers, String responseString, Throwable throwable) {
+                        Log.d("demo", "onFailure: " + responseString);
+                        Log.d("demo", "onFailure: " + statusCode);
+                    }
+
+                    @Override
+                    public void onSuccess(int statusCode, Header[] headers, String responseString) {
+                        Log.d("demo", "pass: " + responseString);
+                        Log.d("demo", "pass: " + statusCode);
+                    }
+
+                    private String clientToken;
+
+//                    @Override
+//                    public void onFailure(int statusCode, Header[] headers, String responseString, Throwable throwable) {
+//                        Log.d("demo",responseString);
+//                        Log.d("demo","get token failed");
+//                    }
+//
+//                    @Override
+//                    public void onSuccess(int statusCode, Header[] headers, String clientToken) {
+//
+//                        // showDropIn(clientToken);
+//                        Log.d("demo",clientToken);
+//                    }
+                });
+               // clearCart();
             }
         });
 
@@ -380,14 +410,6 @@ public class CartFragment extends Fragment {
                     public void onSuccess(int statusCode, Header[] headers, byte[] responseBody) {
                         mProgressBar.setVisibility(View.GONE);
                         Toast.makeText(getContext(), "Payment successful", Toast.LENGTH_SHORT).show();
-                        try {
-                            String str = new String(responseBody, "UTF-8");
-                            Toast.makeText(, "", Toast.LENGTH_SHORT).show();
-                        } catch (UnsupportedEncodingException e) {
-                            e.printStackTrace();
-                        }
-                        Log.d("demo","sent");
-
                         Bundle authBundle = new Bundle();
                         authBundle.putString(AUTH_KEY, mAuthorizationkey);
                         navController.navigate(R.id.nav_order_complete, authBundle);
@@ -396,10 +418,17 @@ public class CartFragment extends Fragment {
                     @Override
                     public void onFailure(int statusCode, Header[] headers, byte[] responseBody, Throwable error) {
                         mProgressBar.setVisibility(View.GONE);
-                        Toast.makeText(getContext(), "Payment failed", Toast.LENGTH_SHORT).show();
-                        Log.d("demo","failed" );
+                        try {
+                            String str = new String(responseBody, "UTF-8");
+                            Toast.makeText(getContext(), str, Toast.LENGTH_SHORT).show();
+                        } catch (UnsupportedEncodingException e) {
+                            e.printStackTrace();
+                        }
+                        textviewPayment.setVisibility(View.INVISIBLE);
+                        checkout.setVisibility(View.VISIBLE);
+                        pay.setVisibility(View.INVISIBLE);
                     }
-                    // Your implementation here
+
                 }
         );
     }

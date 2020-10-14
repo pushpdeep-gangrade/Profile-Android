@@ -14,7 +14,7 @@
 - Mockup: https://xd.adobe.com/view/5d826fe9-1fa4-4b11-bd5e-ce6f1dad719e-08d1
 
 ## Video Demo <a name="demo"></a>
-- App Demo: 
+- App Demo: https://www.youtube.com/watch?v=PZN-J7Q2kzw&feature=youtu.be
 
 ## Project Wiki <a name="wiki"></a>
 

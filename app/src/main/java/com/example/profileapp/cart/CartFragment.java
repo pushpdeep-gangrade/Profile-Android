@@ -383,7 +383,7 @@ public class CartFragment extends Fragment {
                         Toast.makeText(getContext(), "Payment successful", Toast.LENGTH_SHORT).show();
                         try {
                             String str = new String(responseBody, "UTF-8");
-                            Toast.makeText(, "", Toast.LENGTH_SHORT).show();
+                            Toast.makeText(getContext(), "Payment successful", Toast.LENGTH_SHORT).show();
                         } catch (UnsupportedEncodingException e) {
                             e.printStackTrace();
                         }

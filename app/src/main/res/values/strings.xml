@@ -38,4 +38,5 @@
     <string name="placeholder_text">Placeholder</string>
     <string name="total">Total:</string>
     <string name="product">Product</string>
+    <string name="clear_cart">Clear Cart</string>
 </resources>

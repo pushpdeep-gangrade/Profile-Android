@@ -28,9 +28,11 @@ import com.android.volley.Response;
 import com.android.volley.VolleyError;
 import com.android.volley.toolbox.StringRequest;
 import com.android.volley.toolbox.Volley;
+import com.braintreepayments.api.DataCollector;
 import com.braintreepayments.api.dropin.DropInActivity;
 import com.braintreepayments.api.dropin.DropInRequest;
 import com.braintreepayments.api.dropin.DropInResult;
+import com.braintreepayments.api.interfaces.BraintreeResponseListener;
 import com.cardinalcommerce.shared.userinterfaces.ProgressDialog;
 import com.example.profileapp.MainActivity;
 import com.example.profileapp.R;
@@ -250,6 +252,7 @@ public class CartFragment extends Fragment {
     public void showDropIn(String braintreeClientToken){
         DropInRequest dropInRequest = new DropInRequest()
                 .vaultManager(true)
+                .collectDeviceData(true)
                 .clientToken(braintreeClientToken);
         startActivityForResult(dropInRequest.getIntent(view.getContext()), 101);
     }
@@ -260,6 +263,7 @@ public class CartFragment extends Fragment {
         if (requestCode == 101) {
             if (resultCode == RESULT_OK) {
                 final DropInResult result = data.getParcelableExtra(DropInResult.EXTRA_DROP_IN_RESULT);
+                final String deviceData = result.getDeviceData();
                 textviewPayment.setText(result.getPaymentMethodType() + " " + result.getPaymentMethodNonce().getDescription());
                 textviewPayment.setVisibility(View.VISIBLE);
                 checkout.setVisibility(View.INVISIBLE);
@@ -268,7 +272,7 @@ public class CartFragment extends Fragment {
                     @Override
                     public void onClick(View view) {
                         mProgressBar.setVisibility(View.VISIBLE);
-                        sendNonce(result.getPaymentMethodNonce().getNonce());
+                        sendNonce(result.getPaymentMethodNonce().getNonce(),deviceData);
                     }
                 });
 
@@ -281,7 +285,7 @@ public class CartFragment extends Fragment {
         }
     }
 
-    public void sendNonce(String nonce){
+    public void sendNonce(String nonce,String deviceDataFromClient){
         AsyncHttpClient client = new AsyncHttpClient();
         RequestParams params = new RequestParams();
         params.put("payment_method_nonce", nonce);
@@ -291,6 +295,7 @@ public class CartFragment extends Fragment {
         params.put("email", user.email);
         params.put("firstname", user.firstName);
         params.put("lastname", user.lastName);
+        params.put("deviceDataFromClient", deviceDataFromClient);
 
         getCurrentTotal();
         Log.d("Total", formatted);

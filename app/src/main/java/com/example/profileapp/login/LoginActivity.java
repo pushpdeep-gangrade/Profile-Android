@@ -77,29 +77,29 @@ public class LoginActivity extends AppCompatActivity {
                                 if (response.equals("Invalid Credentials")) {
                                     Toast.makeText(LoginActivity.this, response, Toast.LENGTH_LONG).show();
                                 } else {
-                                    Gson gsonObject = new Gson();
+                                    //Gson gsonObject = new Gson();
                                     try {
-                                        JSONArray arr = new JSONArray(response);
+                                       /* JSONArray arr = new JSONArray(response);
                                         JSONObject userObject = new JSONObject(String.valueOf(arr.get(0)));
                                         User user = new User();
                                         user.firstName = userObject.getString("fname");
                                         user.lastName = userObject.getString("lname");
                                         user.email = userObject.getString("emailId");
                                         user.address = userObject.getString("address");
-                                        user.age = userObject.getInt("age");
+                                        user.age = userObject.getInt("age");*/
 
 //                                        SharedPreferences prefs = getSharedPreferences("info", MODE_PRIVATE);
 //                                        prefs.edit().putString("user", gsonObject.toJson(user)).commit();
 
                                         SharedPreferences prefs = getSharedPreferences("info", MODE_PRIVATE);
-                                        prefs.edit().putString("email", user.email).commit();
+                                        //prefs.edit().putString("email", user.email).commit();
                                         prefs.edit().putString("authKey", authkey).commit();
 
                                         Log.d("Login", response);
 
 
 
-                                    } catch (JSONException e) {
+                                    } catch (Exception e) {
                                         e.printStackTrace();
                                     }
 

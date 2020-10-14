@@ -36,4 +36,5 @@
     <string name="item_price">Price of Item</string>
     <string name="item_quantity">Quantity</string>
     <string name="quantity_default">0</string>
+    <string name="clear_cart">Clear Cart</string>
 </resources>

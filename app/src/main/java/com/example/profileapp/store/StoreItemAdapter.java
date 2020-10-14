@@ -1,5 +1,6 @@
 package com.example.profileapp.store;
 
+import android.annotation.SuppressLint;
 import android.content.Context;
 import android.graphics.drawable.Drawable;
 import android.os.Bundle;
@@ -76,6 +77,7 @@ public class StoreItemAdapter extends RecyclerView.Adapter<StoreItemViewHolder> 
         return vh;
     }
 
+    @SuppressLint("SetTextI18n")
     @Override
     public void onBindViewHolder(@NonNull StoreItemViewHolder holder, int position) {
         final StoreItem storeItem = storeItemList.get(position);
@@ -108,6 +110,7 @@ public class StoreItemAdapter extends RecyclerView.Adapter<StoreItemViewHolder> 
         }
 
         addToCart.setOnClickListener(new View.OnClickListener() {
+            @SuppressLint("SetTextI18n")
             @Override
             public void onClick(View view) {
                 if(addToCart.getText().toString().equals("Add to Cart")){

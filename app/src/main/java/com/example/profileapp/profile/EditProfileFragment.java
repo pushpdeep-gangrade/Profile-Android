@@ -1,5 +1,6 @@
 package com.example.profileapp.profile;
 
+import android.annotation.SuppressLint;
 import android.content.SharedPreferences;
 import android.os.Bundle;
 
@@ -199,6 +200,7 @@ public class EditProfileFragment extends Fragment {
 
                     StringRequest postRequest = new StringRequest(Request.Method.POST, updateProfileUrl,
                             new Response.Listener<String>() {
+                                @SuppressLint("ApplySharedPref")
                                 @Override
                                 public void onResponse(String response) {
                                     // response

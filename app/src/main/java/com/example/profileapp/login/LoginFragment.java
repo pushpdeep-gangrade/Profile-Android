@@ -1,5 +1,6 @@
 package com.example.profileapp.login;
 
+import android.annotation.SuppressLint;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
@@ -28,6 +29,7 @@ public class LoginFragment extends Fragment {
         super.onStart();
     }
 
+    @SuppressLint("ApplySharedPref")
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);

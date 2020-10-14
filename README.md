@@ -73,6 +73,7 @@
       "address": "123 JS Street"
       }
   ```
+  
   <br />
   ```
   Get Current User Profile
@@ -93,6 +94,7 @@
       "address": "123 JS Street"
       }
   ```
+  
   <br />
   ```
   Get Current User Profile
@@ -113,4 +115,5 @@
       "address": "123 JS Street"
       }
   ```
+  
   ### Database Schema

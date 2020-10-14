@@ -1,5 +1,6 @@
 package com.example.profileapp.cart;
 
+import android.annotation.SuppressLint;
 import android.os.Bundle;
 
 import androidx.fragment.app.Fragment;
@@ -97,6 +98,7 @@ public class OrderCompleteFragment extends Fragment {
         return view;
     }
 
+    @SuppressLint("SetTextI18n")
     public void completeOrder(){
         if(cartList.size() > 0){
             /*UUID orderUUID = UUID.randomUUID();

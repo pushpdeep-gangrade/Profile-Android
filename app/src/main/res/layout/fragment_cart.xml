@@ -34,7 +34,7 @@
         android:id="@+id/button_checkout"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="Proceed to Checkout"
+        android:text="@string/proceed_checkout"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent" />
@@ -43,7 +43,7 @@
         android:id="@+id/button_pay"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="Pay"
+        android:text="@string/pay"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.498"

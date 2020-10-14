@@ -1,5 +1,6 @@
 package com.example.profileapp.cart;
 
+import android.annotation.SuppressLint;
 import android.content.Context;
 import android.graphics.drawable.Drawable;
 import android.os.Bundle;
@@ -82,6 +83,7 @@ public class CartItemAdapter extends RecyclerView.Adapter<StoreItemViewHolder> {
         return vh;
     }
 
+    @SuppressLint("SetTextI18n")
     @Override
     public void onBindViewHolder(@NonNull StoreItemViewHolder holder, int position) {
         final StoreItem storeItem = storeItemList.get(position);
@@ -215,6 +217,7 @@ public class CartItemAdapter extends RecyclerView.Adapter<StoreItemViewHolder> {
         queue.add(getRequest);
     }
 
+    @SuppressLint("SetTextI18n")
     public void getCurrentTotal(){
         currentTotal = 0;
 

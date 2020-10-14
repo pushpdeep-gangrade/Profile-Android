@@ -61,7 +61,6 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
     private String mAuthorizationkey;
     public static final String url = "http://104.248.113.55:8088/v1/user/";
     private NavController navController;
-    private AppBarConfiguration appBarConfiguration;
     public static List<StoreItem> cartList = new ArrayList<>();
     public static List<Order> orderList = new ArrayList<>();
     private TextView userFullname, userEmail;
@@ -92,7 +91,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         NavHostFragment navHostFragment = (NavHostFragment) getSupportFragmentManager().findFragmentById(R.id.nav_host_fragment);
         navController = navHostFragment.getNavController();
 
-        appBarConfiguration = new AppBarConfiguration.Builder(navController.getGraph())
+        AppBarConfiguration appBarConfiguration = new AppBarConfiguration.Builder(navController.getGraph())
                 .setDrawerLayout(drawerLayout).build();
 
         NavigationUI.setupActionBarWithNavController(this,navController, appBarConfiguration);

@@ -1,5 +1,6 @@
 package com.example.profileapp.login;
 
+import android.annotation.SuppressLint;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
@@ -68,6 +69,7 @@ public class LoginActivity extends AppCompatActivity {
 
                 StringRequest postRequest = new StringRequest(Request.Method.POST, loginUrl,
                         new Response.Listener<String>() {
+                            @SuppressLint("ApplySharedPref")
                             @Override
                             public void onResponse(String response) {
                                 // response

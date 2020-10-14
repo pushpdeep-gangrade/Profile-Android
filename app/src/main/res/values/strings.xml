@@ -14,6 +14,7 @@
     <string name="password_hint">Password</string>
     <string name="reEnter_password_hint">Re-enter Password</string>
     <string name="address_hint">Address</string>
+    <string name="quantity_hint">1</string>
     <string name="signup_button_text">Sign Up</string>
     <string name="cancel_button_text">Cancel</string>
     <string name="hello_blank_fragment">Hello blank fragment</string>
@@ -31,5 +32,8 @@
     <string name="order_number">Order Number</string>
     <string name="order_complete">Order Complete!</string>
     <string name="return_to_store">Return to Store</string>
-    <string name="clear_cart">Clear Cart</string>
+    <string name="item_name">Name of Item</string>
+    <string name="item_price">Price of Item</string>
+    <string name="item_quantity">Quantity</string>
+    <string name="quantity_default">0</string>
 </resources>

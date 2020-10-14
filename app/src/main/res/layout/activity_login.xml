@@ -4,7 +4,6 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@drawable/purple_background"
     tools:context=".login.LoginActivity">
 
     <TextView
@@ -42,8 +41,8 @@
         android:layout_width="360dp"
         android:layout_height="wrap_content"
         android:layout_marginTop="24dp"
-        android:ems="10"
         android:autofillHints="@string/password_hint"
+        android:ems="10"
         android:hint="@string/password_hint"
         android:inputType="textPassword"
         app:layout_constraintEnd_toEndOf="parent"

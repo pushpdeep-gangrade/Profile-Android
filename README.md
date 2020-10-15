@@ -112,7 +112,6 @@
     Body:
       Record Updated
   ```
-  <br />
   Cart:
   ```
   Get Current User Cart

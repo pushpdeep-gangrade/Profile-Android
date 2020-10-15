@@ -16,11 +16,6 @@ public class SignupFragment extends Fragment {
         // Required empty public constructor
     }
 
-    public static SignupFragment newInstance(String param1, String param2) {
-        SignupFragment fragment = new SignupFragment();
-        return fragment;
-    }
-
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);

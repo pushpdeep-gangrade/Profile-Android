@@ -3,7 +3,7 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/mobile_navigation"
-    app:startDestination="@id/nav_view_profile">
+    app:startDestination="@id/nav_store">
     <fragment
         android:id="@+id/nav_login"
         android:name="com.example.profileapp.login.LoginFragment"
@@ -28,20 +28,100 @@
     <fragment
         android:id="@+id/nav_view_profile"
         android:name="com.example.profileapp.profile.ViewProfileFragment"
-        android:label="fragment_view_profile"
+        android:label="Profile"
         tools:layout="@layout/fragment_view_profile" >
         <action
             android:id="@+id/action_nav_view_profile_to_nav_edit_profile"
-            app:destination="@id/nav_edit_profile" />
+            app:destination="@id/nav_edit_profile"
+            app:popUpTo="@id/nav_view_profile" />
+        <action
+            android:id="@+id/action_nav_view_profile_self"
+            app:destination="@id/nav_view_profile" />
+        <action
+            android:id="@+id/action_nav_view_profile_to_nav_logout2"
+            app:destination="@id/nav_logout" />
 
     </fragment>
     <fragment
         android:id="@+id/nav_edit_profile"
         android:name="com.example.profileapp.profile.EditProfileFragment"
-        android:label="fragment_edit_profile"
+        android:label="Edit Profile"
         tools:layout="@layout/fragment_edit_profile" >
         <action
             android:id="@+id/action_nav_edit_profile_to_nav_view_profile"
+            app:destination="@id/nav_view_profile"
+            app:popUpTo="@id/nav_edit_profile"
+            app:popUpToInclusive="true" />
+        <action
+            android:id="@+id/action_nav_edit_profile_to_nav_logout"
+            app:destination="@id/nav_logout" />
+    </fragment>
+    <fragment
+        android:id="@+id/nav_logout"
+        android:name="com.example.profileapp.login.LoginFragment"
+        android:label="fragment_logout"
+        tools:layout="@layout/fragment_login" >
+        <action
+            android:id="@+id/action_nav_logout_to_nav_signup"
+            app:destination="@id/nav_signup" />
+        <action
+            android:id="@+id/action_nav_logout_to_nav_view_profile2"
             app:destination="@id/nav_view_profile" />
     </fragment>
+    <fragment
+        android:id="@+id/nav_store"
+        android:name="com.example.profileapp.store.StoreFragment"
+        android:label="Store"
+        tools:layout="@layout/fragment_store" >
+        <action
+            android:id="@+id/action_nav_store_to_nav_cart"
+            app:destination="@id/nav_cart" />
+    </fragment>
+    <fragment
+        android:id="@+id/nav_cart"
+        android:name="com.example.profileapp.cart.CartFragment"
+        android:label="Cart"
+        tools:layout="@layout/fragment_cart" >
+    </fragment>
+    <fragment
+        android:id="@+id/nav_order_history"
+        android:name="com.example.profileapp.orderhistory.OrderHistoryFragment"
+        android:label="Order History"
+        tools:layout="@layout/fragment_order_history" >
+        <action
+            android:id="@+id/action_nav_order_history_to_nav_previous_order"
+            app:destination="@id/nav_previous_order" />
+    </fragment>
+    <fragment
+        android:id="@+id/nav_order_complete"
+        android:name="com.example.profileapp.cart.OrderCompleteFragment"
+        android:label="Order Complete"
+        tools:layout="@layout/fragment_order_complete" >
+        <action
+            android:id="@+id/action_nav_order_complete_to_nav_store"
+            app:destination="@id/nav_store" />
+    </fragment>
+    <fragment
+        android:id="@+id/nav_previous_order"
+        android:name="com.example.profileapp.orderhistory.PreviousOrderFragment"
+        android:label="Previous Order"
+        tools:layout="@layout/fragment_previous_order" >
+    </fragment>
+    <fragment
+        android:id="@+id/nav_transaction_history"
+        android:name="com.example.profileapp.transactionhistory.TransactionHistoryFragment"
+        android:label="Transaction History"
+        tools:layout="@layout/fragment_transaction_history" >
+        <action
+            android:id="@+id/action_nav_transaction_history_to_nav_transaction_details"
+            app:destination="@id/nav_transaction_details" />
+    </fragment>
+    <fragment
+        android:id="@+id/nav_transaction_details"
+        android:name="com.example.profileapp.transactionhistory.TransactionDetailsFragment"
+        android:label="Transaction Details"
+        tools:layout="@layout/fragment_transaction_details" >
+    </fragment>
+
+
 </navigation>

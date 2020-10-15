@@ -1,0 +1,164 @@
+{
+    "storeItems": [
+        {
+            "name": "Oranges",
+            "photo": "Oranges.jpeg",
+            "region": "produce",
+            "price": 0.89,
+            "discount": 0.1,
+            "quantity": 0
+        },
+        {
+            "name": "Bananas",
+            "photo": "Bananas.jpg",
+            "region": "produce",
+            "price": 0.89,
+            "discount": 0.1,
+            "quantity": 0
+        },
+        {
+            "name": "Apples",
+            "photo": "Apples.jpeg",
+            "region": "produce",
+            "price": 0.89,
+            "discount": 0.1,
+            "quantity": 0
+        },
+        {
+            "name": "Grapes",
+            "photo": "Grapes.jpeg",
+            "region": "produce",
+            "price": 0.89,
+            "discount": 0.1,
+            "quantity": 0
+        },
+        {
+            "discount": 0.10,
+            "name": "Pineapple",
+            "photo": "pineapple.png",
+            "price": 1.18,
+            "region": "produce",
+            "quantity": 0
+        },
+        {
+            "discount": 0.10,
+            "name": "Croissants",
+            "photo": "croissants.png",
+            "price": 2.79,
+            "region": "grocery",
+            "quantity": 0
+        },
+        {
+            "discount": 0.20,
+            "name": "Jelly Beans",
+            "photo": "jelly-beans.png",
+            "price": 2.21,
+            "region": "grocery",
+            "quantity": 0
+        },
+        {
+            "discount": 0.20,
+            "name": "Dial Soap",
+            "photo": "dial.jpg",
+            "price": 2.99,
+            "region": "lifestyle",
+            "quantity": 0
+        },
+        {
+            "discount": 0.15,
+            "name": "Sponges",
+            "photo": "scotch-brite-sponges.png",
+            "price": 5.89,
+            "region": "lifestyle",
+            "quantity": 0
+        },
+        {
+            "discount": 0.15,
+            "name": "Lettuce",
+            "photo": "lettuce.jpg",
+            "price": 3.69,
+            "region": "produce",
+            "quantity": 0
+        },
+        {
+            "discount": 0.15,
+            "name": "Coca Cola",
+            "photo": "coca-cola.png",
+            "price": 6.99,
+            "region": "grocery",
+            "quantity": 0
+        },
+        {
+            "discount": 0.10,
+            "name": "Gatorade",
+            "photo": "gatorade.png",
+            "price": 3.89,
+            "region": "grocery",
+            "quantity": 0
+        },
+        {
+            "discount": 0.10,
+            "name": "Conditioner",
+            "photo": "organix-conditioner.png",
+            "price": 13.46,
+            "region": "lifestyle",
+            "quantity": 0
+        },
+        {
+            "discount": 0.10,
+            "name": "Spinach",
+            "photo": "spinach.png",
+            "price": 1.23,
+            "region": "produce",
+            "quantity": 0
+        },
+        {
+            "discount": 0.15,
+            "name": "Cranberry C",
+            "photo": "cranberry-cocktail.png",
+            "price": 1.89,
+            "region": "grocery",
+            "quantity": 0
+        },
+        {
+            "discount": 0.20,
+            "name": "Milk",
+            "photo": "milk.jpg",
+            "price": 10.5,
+            "region": "grocery",
+            "quantity": 0
+        },
+        {
+            "discount": 0.15,
+            "name": "HI-C Fruit Punch",
+            "photo": "hi-c-fruit-punch.png",
+            "price": 4.67,
+            "region": "grocery",
+            "quantity": 0
+        },
+        {
+            "discount": 0.10,
+            "name": "Nectarines",
+            "photo": "fresh-nectarines.png",
+            "price": 3.67,
+            "region": "produce",
+            "quantity": 0
+        },
+        {
+            "discount": 0.10,
+            "name": "Watermelon",
+            "photo": "watermellon.jpg",
+            "price": 6.99,
+            "region": "produce",
+            "quantity": 0
+        },
+        {
+            "discount": 0.15,
+            "name": "US Weekly",
+            "photo": "us-weekly.png",
+            "price": 4.99,
+            "region": "lifestyle",
+            "quantity": 0
+        }
+    ]
+}

@@ -2,7 +2,6 @@ package com.example.profileapp.signup;
 
 import androidx.appcompat.app.AppCompatActivity;
 
-import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
@@ -17,7 +16,6 @@ import com.android.volley.Response;
 import com.android.volley.VolleyError;
 import com.android.volley.toolbox.StringRequest;
 import com.android.volley.toolbox.Volley;
-import com.example.profileapp.MainActivity;
 import com.example.profileapp.R;
 
 import java.util.HashMap;
@@ -26,7 +24,7 @@ import java.util.Map;
 public class SignUpActivity extends AppCompatActivity {
     EditText firstName, lastName, email, address, password, reEnterPassword, age;
     Button signUp, cancel;
-    String url = "http://104.248.113.55:8080/";
+    final String url = "http://104.248.113.55:8088/v1/user/";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -84,14 +82,14 @@ public class SignUpActivity extends AppCompatActivity {
                     protected Map<String, String> getParams()
                     {
                         String firstNameText = firstName.getText().toString();
-                        String lastNameText = firstName.getText().toString();
+                        String lastNameText = lastName.getText().toString();
                         String emailText = email.getText().toString();
                         String addressText = address.getText().toString();
                         String ageText = age.getText().toString();
                         String passwordText = password.getText().toString();
                         String reEnterPasswordText = reEnterPassword.getText().toString();
 
-                        Map<String, String>  params = new HashMap<String, String>();
+                        Map<String, String>  params = new HashMap<>();
 
                         boolean allValid = true;
 

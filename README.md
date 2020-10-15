@@ -73,8 +73,6 @@
       "address": "123 JS Street"
       }
   ```
-  
-  <br />
   ```
   Get Current User Profile
   GET METHOD
@@ -94,8 +92,6 @@
       "address": "123 JS Street"
       }
   ```
-  
-  <br />
   ```
   Get Current User Profile
   GET METHOD

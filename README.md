@@ -53,7 +53,6 @@
   <img src="https://github.com/pushpdeep-gangrade/Profile-Android/blob/main/screenshots/LoginDocumentationAPI.png" width=800>
   <br />
   Profile:
-  <br />
   ```
   Get Other User Profile
   GET METHOD
@@ -66,11 +65,11 @@
   Response:
     Body:
      {
-      "emailId": "jsmith@email.com",
-      "age": "27",
-      "fname": "John",
-      "lname": "Smith",
-      "address": "123 JS Street"
+      emailId: "jsmith@email.com",
+      age: "27",
+      fname: "John",
+      lname: "Smith",
+      address: "123 JS Street"
       }
   ```
   ```
@@ -85,17 +84,40 @@
   Response:
     Body:
      {
-      "emailId": "jsmith@email.com",
-      "age": "27",
-      "fname": "John",
-      "lname": "Smith",
-      "address": "123 JS Street"
+      emailId: "jsmith@email.com",
+      age: "27",
+      fname: "John",
+      lname: "Smith",
+      address: "123 JS Street"
       }
   ```
   ```
-  Get Current User Profile
-  GET METHOD
+  Update Current User Profile
+  POST METHOD
   http://104.248.113.55:8088/v1/user/profile/me
+
+  Request:
+    Header:
+      authorizationkey: user's generated key
+    Body:
+      {
+        "password": "jsmith@email.com",
+        age: "27",
+        fname: "John",
+        lname: "Smith",
+        address: "123 JS Street"
+      }
+
+  Response:
+    Body:
+      Record Updated
+  ```
+  <br />
+  Cart:
+  ```
+  Get Current User Cart
+  GET METHOD
+  http://104.248.113.55:8088/v1/user/cart
 
   Request:
     Header:
@@ -103,13 +125,138 @@
 
   Response:
     Body:
-     {
-      "emailId": "jsmith@email.com",
-      "age": "27",
-      "fname": "John",
-      "lname": "Smith",
-      "address": "123 JS Street"
+      {
+        "_id": "userid-cart",
+        "items": [
+            {
+              name: "Orange Juice",
+              discount: "0.1",
+              photo: "orange-juice.png",
+              price: "0.89",
+              region: "produce",
+              quantity: 6
+            }
+          ]
+        }
+  ```
+  ```
+  Update Current User Cart
+  POST METHOD
+  http://104.248.113.55:8088/v1/user/cart
+
+  Request:
+    Header:
+      authorizationkey: user's generated key
+    Body:
+      {
+        name: "Orange Juice",
+        discount: "0.1",
+        photo: "orange-juice.png",
+        price: "0.89",
+        region: "produce",
+        quantity: 6
       }
+
+  Response:
+    Body:
+      Record Added/Updated/Removed
+  ```
+  ```
+  Clear Current User Cart
+  DELETE METHOD
+  http://104.248.113.55:8088/v1/user/cart
+
+  Request:
+    Header:
+      authorizationkey: user's generated key
+
+  Response:
+    Body:
+      Record Removed
+  ```
+  Order:
+  ```
+  Get Current User Order History
+  GET METHOD
+  http://104.248.113.55:8088/v1/user/order/history
+
+  Request:
+    Header:
+      authorizationkey: user's generated key
+
+  Response:
+    Body:
+      {
+        "_id": "userid-orders",
+        "orders": [
+            {
+                "date": "2020-10-14",
+                "items": [
+                    {
+                        "name": "Oranges",
+                        "discount": "0.1",
+                        "photo": "Oranges.jpeg",
+                        "price": "0.89",
+                        "region": "produce",
+                        "quantity": "6"
+                    }
+                ]
+            }
+         ]
+      }
+  ```
+  ```
+  Update Current User Order History
+  POST METHOD
+  http://104.248.113.55:8088/v1/user/order/history
+
+  Request:
+    Header:
+      authorizationkey: user's generated key
+
+  Response:
+    Body:
+      Order Complete
+  ```
+  Transaction:
+  ```
+  Get Current User Transaction History
+  GET METHOD
+  http://104.248.113.55:8088/v1/user/transaction/history
+
+  Request:
+    Header:
+      authorizationkey: user's generated key
+
+  Response:
+    Body:
+      {
+        "_id": "662563111-transactions",
+        "transactions": [
+            {
+                "tId": "nfbma0me",
+                "tAmount": "8.01",
+                "tType": "sale",
+                "tStatus": "submitted_for_settlement",
+                "tCustomer": "Pushpdeep Gangrade",
+                "tMaskedNumber": "411111******1111",
+                "tCardType": "Visa"
+            }
+          ]
+       }
+  ```
+  Payement:
+  ```
+  Get Client Token for User Payment
+  GET METHOD
+  http://104.248.113.55:8088/v1/payment/client_token
+  ???
+  ```
+  ```
+  Checkout User
+  POST METHOD
+  http://104.248.113.55:8088/v1/payment/checkout
+  ???
   ```
   
   ### Database Schema

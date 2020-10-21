@@ -5,7 +5,7 @@
 - [Project Wiki](#wiki)
 
 ## Authors <a name="authors"></a>
-- Pushdeep Gangrade
+- Pushpdeep Gangrade
 - Katy Mitchell
 - Valerie Ray
 - Rockford Stoller
@@ -20,24 +20,24 @@
 
 ### App Features
 - This project extends Profile-Android to include mobile payments using the BrainTree SDK (https://www.braintreepayments.com/).
-- User management, including login/logout, signup, view and edit profile.
+- Provides user management, including login/logout, signup, view and edit profile.
 - The user is provided with a list of products to purchase. They are able to view a product and add 
   it to their shopping cart.
 - The shopping cart:
   - The user is able to view and delete the contents of the shopping cart.
   - If the user adds the same product to the cart then the quantity of that item is updated.
-  - The user is able to clear all the shopping cart.
+  - The user is able to clear all items in the shopping cart.
   - The user is able to checkout, which initiates the payment process.
 - Payment Processing:
   - The DropIn UI is displayed to start the payment process, giving users the option of PayPal or credit 
     card. The user's previously used payment methods are also visible.
   - The user can complete the payment process using a new credit card or a previously used credit card.
-- Order History:
-  - The app should enable the user to view their previous orders and the details of each order.
+- Order History: The user can view their previous orders and the details of each order.
   
   ### API Implementation and Design
-- When a user is created, on the server, the BrainTree API should be contacted to create a user customerId on BrainTree, which should then be stored on your server to be used when the user attempts to make future purchases.
-- The products information should be stored on the server, and should be retrievable through an API.
+- When a user is created, on the server, the BrainTree API is contacted to create a user customerId.
+  This ID is stored on the server and used when the user attempts to make future purchases.
+- The products information is also stored on the server, and is retrievable through an API.
 - The DropIn UI is displayed to start the payment process with the use of your server to generate the clientToken.
 - The customerId is provided to BrainTree to enable BrainTree to display the user's previously used payment methods.
 - The completed transactions are stored on the server.
@@ -249,13 +249,13 @@
   Get Client Token for User Payment
   GET METHOD
   http://104.248.113.55:8088/v1/payment/client_token
-  ???
   ```
   ```
   Checkout User
   POST METHOD
   http://104.248.113.55:8088/v1/payment/checkout
-  ???
   ```
   
   ### Database Schema
+  
+- todo Insert image

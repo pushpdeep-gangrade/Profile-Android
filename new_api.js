@@ -46,7 +46,7 @@ const swaggerOptions = {
       "title": "User API",
       "description": "User API documentation. This API can be used to design login, signup and viewing user profile.",
       "contact": {
-        "name": "Pushpdeep Gangrade, Rockford Stroller, Valerie Ray, Katy Mitchel",
+        "name": "Pushpdeep Gangrade, Rockford Stroller, Valerie Ray, Katy Mitchell",
         "url": "https://github.com/pushpdeep-gangrade/Profile-Android",
       },
       "servers": ["http://104.248.113.55:8088/"]
